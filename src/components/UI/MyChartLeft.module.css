@@ -1,0 +1,107 @@
+.rootDiv {
+    margin: 0 1rem;
+    padding: 0.5rem;
+    width: 600px;
+
+    background-color: #f2f2f2;
+}
+
+h1 {
+    text-align: center;
+    margin: 1rem
+}
+
+.indexRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0.5rem
+}
+
+.indexRow button {
+    width: 8rem;
+}
+
+.gainRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.externalLinksRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+}
+
+.positiveGain {
+    color: green;
+    margin: 0 1rem;
+}
+
+.negativeGain {
+    color: red;
+    margin: 0 1rem;
+}
+
+h5 {
+    text-align: center;
+    margin: 0.3rem
+}
+
+.buttonRow {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem
+}
+
+.buttonRow button {
+    width: 10rem;
+}
+
+.activityTable {
+    max-height: 720px;
+    overflow: scroll;
+}
+
+.formControl {
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.formControl label {
+    font-weight: normal;
+    width: 5rem;
+    margin: 0 0.3rem 0 0;
+}
+
+.formControl input {
+    width: 20rem;
+    border: 1px solid #ccc;
+    font: inherit;
+    line-height: 1.5rem;
+    padding: 0 0.25rem;
+}
+
+.formControl input:focus {
+    outline: none;
+    background: #fad0ec;
+    border-color: #8b005d;
+}
+
+.formControl textarea:focus {
+    background: #fad0ec;
+    border-color: #8b005d;
+}
+
+.formControl.invalid input {
+    border-color: red;
+    background: #ffd7d7;
+}
+
+.formControl.invalid label {
+    color: red;
+}

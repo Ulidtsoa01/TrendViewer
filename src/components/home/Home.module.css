@@ -1,0 +1,29 @@
+.panel {
+    border: 1px, solid, #c7c6c6;
+    border-radius: 4px;
+    max-width: 1200px;
+    margin: 5px;
+}
+
+.accordion {
+    margin: 5px;
+    max-width: 1200px;
+}
+
+.buttonRow {
+    margin-top: 1em;
+}
+
+.container {
+    text-align: center;
+}
+
+.form {
+    display: inline-block;
+    text-align: left;
+    width: 30em;
+}
+
+.toolbarButton {
+    margin-right: 1em;
+}

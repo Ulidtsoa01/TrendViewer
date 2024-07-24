@@ -1,0 +1,75 @@
+.nav {
+    display: flex;
+    width: 100%;
+    height: 3em;
+    margin-left: 0.5em;
+}
+
+.notice {
+    margin-left: 1em;
+}
+
+.tickerSelect {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    width: 20em;
+    background-color: white;
+    background-clip: padding-box;
+    text-align: center;
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.tickerBox {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    width: 5em;
+    background-color: white;
+    background-clip: padding-box;
+    text-align: center;
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+    padding: .2rem .5rem;
+    border: 1px, solid, rgb(192, 192, 197);
+    border-radius: 0.5em;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.header {
+    font-size: 2em;
+    /* margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    margin-left: 0.1em;*/
+    margin-right: 0.5em; 
+    font-weight: bold;
+}
+
+.table {
+    margin: 0 0.5rem;
+}
+
+th.up {
+    background-image: url("../../images/up_arrow.png");
+}
+
+th.down {
+    background-image: url("../../images/down_arrow.png");
+}
+
+th.default {
+    background-image: url("../../images/default.png");
+}
+
+th.up,
+th.default,
+th.down {
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+td.alert {
+    color: red;
+}
