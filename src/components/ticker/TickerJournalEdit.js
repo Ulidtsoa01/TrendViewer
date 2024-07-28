@@ -23,7 +23,7 @@ function TickerJournalEdit(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        _id: journal ? Number(journal.id) : null,
+        _id: journal ? Number(journal._id) : null,
         tickerId: tickerId,
         name: name,
         date: date,
@@ -56,7 +56,7 @@ function TickerJournalEdit(props) {
   const handleDeleteClicked = () => {
     // console.log('handleDeleteClicked called');
     if (journal) {
-      fetch('/rest/journal/normal/' + journal.id, {
+      fetch('/rest/journal/normal/' + journal._id, {
         method: 'DELETE',
         mode: 'cors',
         headers: {

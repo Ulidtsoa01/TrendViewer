@@ -32,6 +32,7 @@ app.get('/hquotes/:id', quote.getHQuotesByTicker);
 //// ticker ////
 
 // ticker info
+app.get('/rest/tinfo', ticker.getTickerNameList);
 app.get('/rest/tinfo/:ticker', ticker.getTickerInfo);
 app.post('/rest/tinfo/update', ticker.createTickerInfo);
 app.put('/rest/tinfo/update', ticker.updateTickerInfo);
@@ -39,13 +40,13 @@ app.put('/rest/tinfo/:id/settings', ticker.modifySettings);
 app.delete('/rest/tinfo/:id', ticker.deleteTickerInfo);
 
 // ticker journal
-app.put('/rest/journal/normal/update', ticker.createTickerJournal);
-app.post('/rest/journal/normal/update', ticker.updateTickerJournal);
+app.post('/rest/journal/normal/update', ticker.createTickerJournal);
+app.put('/rest/journal/normal/update', ticker.updateTickerJournal);
 app.delete('/rest/journal/normal/:id', ticker.deleteTickerJournal);
 
 // ticker hquote
-app.get('/rest/hquote/daily/:id', ticker.getHQuote);
-app.post('/rest/action/deletequotes/:ticker', ticker.deleteHQuote);
+app.get('/rest/hquote/daily/:id', quote.getHQuotesByTicker);
+app.post('/rest/action/deletequotes/:id', ticker.deleteHQuote);
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

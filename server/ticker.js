@@ -1,37 +1,9 @@
-// class Ticker {
-//   id;
-//   name;
-//   type;
-//   description;
-//   sector;
-//   industry;
-//   riskProfile;
-//   shares;
-//   exchangeCode;
-//   averageVolume = 0;
-
-//   constructor(id, name, type, description) {
-//     this.id = id;
-//     this.name = name;
-//     this.type = type;
-//     this.description = description;
-//   }
-
-//   toJson() {
-//     JSON.stringify({
-//       id: this.id,
-//       name: this.name,
-//       type: this.type,
-//       description: this.description,
-//       sector: this.sector,
-//       industry: this.industry,
-//       exchangeCode: this.exchangeCode,
-//     });
-//   }
-// }
-
 const dbclient = require('./dbclient');
 const util = require('./util');
+
+exports.getTickerNameList = (req, res) => {
+  res.send(Array.from(util.getTickerNames().keys()).sort());
+};
 
 exports.getTickerInfo = (req, res) => {
   let tickerName = req.params.ticker;
@@ -156,21 +128,19 @@ exports.updateTickerInfo = (req, res) => {
 
 exports.modifySettings = (req, res) => {
   let targetObj = { ...req.body };
-  delete targetObj._id;
+  delete targetObj.tickerId;
   // dbclient.recorddb().collection('ticker').findOne({ _id: req.body._id });
   try {
     dbclient
       .recorddb()
       .collection('ticker')
-      .updateOne(
-        { _id: req.body._id },
-        [{ $set: { settings: { $mergeObjects: ['$settings', targetObj] } } }],
-        { upsert: true }
-      )
+      .updateOne({ tickerId: req.tickerId }, [{ $set: { settings: { $mergeObjects: ['$settings', targetObj] } } }], {
+        upsert: true,
+      })
       .then(res.send({ message: 'Update ticker settings successful' }));
   } catch (e) {
     console.error(e);
-    res.status(500).send({ message: e }); //a
+    res.status(500).send({ message: e });
   }
 };
 
@@ -183,7 +153,7 @@ exports.deleteTickerInfo = (req, res) => {
       .then(res.send({ message: 'Delete ticker successful' }));
   } catch (e) {
     console.error(e);
-    res.status(500).send({ message: e }); //a
+    res.status(500).send({ message: e });
   }
 };
 
@@ -202,16 +172,42 @@ exports.createTickerJournal = (req, res) => {
   }
 };
 
-exports.updateTickerInfo = (req, res) => {
+exports.updateTickerJournal = (req, res) => {
   let targetObj = { ...req.body };
   delete targetObj._id;
 
   try {
     dbclient
       .recorddb()
-      .collection('ticker')
+      .collection('tickerjournal')
       .updateOne({ _id: req.body._id }, { $set: targetObj }, { upsert: true })
       .then(res.send({ message: 'Update ticker journal successful' }));
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.deleteTickerJournal = (req, res) => {
+  try {
+    dbclient
+      .recorddb()
+      .collection('tickerjournal')
+      .deleteOne({ _id: req.params.id })
+      .then(res.send({ message: 'Delete ticker journal successful' }));
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.deleteHQuote = (req, res) => {
+  try {
+    dbclient
+      .quotedb()
+      .collection('hquote')
+      .deleteOne({ _id: req.params.id })
+      .then(res.send({ message: 'Delete hquote successful' }));
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: e });

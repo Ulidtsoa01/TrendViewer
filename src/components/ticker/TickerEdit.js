@@ -7,12 +7,14 @@ function TickerEdit(props) {
   const navigate = useNavigate();
 
   const { tickerInfo, tickers, onCancelClicked, onDeleteClicked, onAddClicked } = props;
-  const [tickerName, setTickerName] = useState(tickerInfo ? tickerInfo.tickerName : '');
+  const [tickerName, setTickerName] = useState(tickerInfo ? tickerInfo.name : '');
   const [type, setType] = useState(tickerInfo ? tickerInfo.type.toLowerCase() : '');
   const [sector, setSector] = useState(tickerInfo ? tickerInfo.sector : '');
   const [industry, setIndustry] = useState(tickerInfo ? tickerInfo.industry : '');
   const [description, setDescription] = useState(tickerInfo ? tickerInfo.tickerDescription : '');
   const [exchangeCode, setExchangeCode] = useState(tickerInfo ? tickerInfo.exchangeCode : '');
+
+  console.log(tickerName);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +30,7 @@ function TickerEdit(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        _id: tickerInfo ? Number(tickerInfo.tickerId) : null,
+        _id: tickerInfo ? Number(tickerInfo._id) : null,
         name: tickerName.toUpperCase(),
         type: type,
         sector: sector,
@@ -61,7 +63,7 @@ function TickerEdit(props) {
       alert('Cannot delete a ticker with activities.');
       return;
     }
-    fetch('/rest/tinfo/' + tickerInfo.tickerId, {
+    fetch('/rest/tinfo/' + tickerInfo._id, {
       method: 'DELETE',
       mode: 'cors',
       headers: {
