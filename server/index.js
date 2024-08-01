@@ -21,11 +21,27 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Hello from server' });
 });
 
+// import
 app.get('/importjson', importjson.importJson);
 app.get('/importquotejson', importjson.importQuoteJson);
 
-app.get('/accounts', account.getAccounts);
+//// account ////
 
+//all accounts
+app.get('/rest/account', account.getAccounts);
+// app.get('/rest/account/tradeactivities', account.getTradeActivities);
+// app.get('/rest/stockreport', account.getStockReport);
+// app.get('/rest/accountreport/annual/all', account.getAllAnnualReports);
+// app.get('/rest/accountreport/monthly/all', account.getAllMonthlyReports);
+
+//individual accounts
+// app.get('/rest/accountreport/annual/:accountId', account.getAnnualReport);
+// app.get('/rest/accountreport/monthly/:accountId', account.getMonthlyReport);
+app.post('/rest/activity', account.postActivity);
+app.delete('/rest/activity/:id', account.deleteActivity);
+app.get('/rest/accountvalue/:accountId', account.getValueHistory);
+
+////
 app.get('/dquotes', quote.getDQuotes);
 app.get('/hquotes/:id', quote.getHQuotesByTicker);
 

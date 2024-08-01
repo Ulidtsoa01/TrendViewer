@@ -45,7 +45,7 @@ function TickerJournals(props) {
       field: 'date',
       type: 'date',
       formatter: (r, v) => (
-        <a href="#" id={r.id} onClick={handleRowClick}>
+        <a href="#" id={r._id} onClick={handleRowClick}>
           {new Date(v).toISOString().split('T')[0]}
         </a>
       ),
@@ -79,7 +79,7 @@ function TickerJournals(props) {
         </Navbar>
       )}
       {mode === 'general' && (
-        <SimpleTable data={tickerInfo.journalList} columns={columns} keyField="id" onRowClick={handleRowClick} />
+        <SimpleTable data={tickerInfo.journalList} columns={columns} keyField="_id" onRowClick={handleRowClick} />
       )}
       {mode === 'editjournal' && (
         <TickerJournalEdit

@@ -1,5 +1,7 @@
 const tickerById = new Map();
 const tickerByName = new Map();
+const counters = new Map();
+const dbclient = require('./dbclient');
 
 exports.getTickerById = (id) => tickerById.get(id);
 exports.getTickerByName = (name) => tickerByName.get(name);
@@ -12,6 +14,39 @@ exports.updateTickers = (tickers) => {
 };
 
 exports.getTickerNames = () => tickerByName;
+
+exports.createCounters = () => {
+  try {
+    dbclient
+      .recorddb()
+      .collection('tickerjournal')
+      .find()
+      .sort({ _id: -1 })
+      .limit(1)
+      .toArray()
+      .then((objs) => {
+        counters.set('tickerjournal', objs[0]._id);
+      });
+    dbclient
+      .recorddb()
+      .collection('activity')
+      .find()
+      .sort({ _id: -1 })
+      .limit(1)
+      .toArray()
+      .then((objs) => {
+        counters.set('activity', objs[0]._id);
+      });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+exports.incrementCounter = (key) => {
+  counters.set(key, counters.get(key) + 1);
+};
+
+exports.getCounters = (key) => counters.get(key);
 
 function parseNasdaqMonth(s) {
   switch (s) {

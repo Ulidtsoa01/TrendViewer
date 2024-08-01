@@ -15,21 +15,38 @@ exports.getTickerInfo = (req, res) => {
 
   let dquote = null,
     activityList = null,
-    journalList = null;
+    journalList = null,
+    ticker = null;
   let dquoteLoaded = false,
     activityListLoaded = false,
-    journalListLoaded = false;
+    journalListLoaded = false,
+    tickerLoaded = false;
 
   const returnFunc = () => {
-    if (!dquoteLoaded || !activityListLoaded || !journalListLoaded) {
+    if (!dquoteLoaded || !activityListLoaded || !journalListLoaded || !tickerLoaded) {
       return; // don't return response if not all loaded
     }
-    let clone = { ...t };
+    let clone = ticker;
     clone.dQuote = dquote;
     clone.activityList = activityList;
     clone.journalList = journalList;
     res.send(clone);
   };
+
+  try {
+    dbclient
+      .recorddb()
+      .collection('ticker')
+      .findOne({ _id: t._id })
+      .then((tickerObj) => {
+        ticker = tickerObj;
+        tickerLoaded = true;
+        returnFunc();
+      });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
 
   try {
     dbclient
@@ -96,8 +113,6 @@ exports.createTickerInfo = (req, res) => {
 };
 
 exports.updateTickerInfo = (req, res) => {
-  // let tickerName = req.params.ticker;
-  // let t = util.getTickerByName(tickerName);
   let targetObj = { ...req.body };
   delete targetObj._id;
   delete targetObj.name;
@@ -111,8 +126,6 @@ exports.updateTickerInfo = (req, res) => {
   // Object.keys(req.body).forEach((key) => {
   //   if (updateKeys.includes(key)) targetObj[key] = req.body[key];
   // });
-
-  // console.log(targetObj);
 
   try {
     dbclient
@@ -130,6 +143,7 @@ exports.modifySettings = (req, res) => {
   let targetObj = { ...req.body };
   delete targetObj.tickerId;
   // dbclient.recorddb().collection('ticker').findOne({ _id: req.body._id });
+  // let ticker = util.getTickerById(req.tickerId);
   try {
     dbclient
       .recorddb()
@@ -157,15 +171,49 @@ exports.deleteTickerInfo = (req, res) => {
   }
 };
 
+// exports.createTickerJournal = (req, res) => {
+//   try {
+//     dbclient
+//       .recorddb()
+//       .collection('tickerjournal')
+//       .find()
+//       .sort({ _id: -1 })
+//       .limit(1)
+//       .toArray()
+//       .then((objs) => {
+//         console.log(objs);
+//         insertTickerJournal(req, res, objs ? objs[0]._id : 0);
+//       });
+//   } catch (e) {
+//     console.error(e);
+//   }
+// };
+
+// const insertTickerJournal = (req, res, maxID) => {
+//   let targetObj = { ...req.body };
+//   try {
+//     targetObj._id = maxID + 1;
+//     dbclient
+//       .recorddb()
+//       .collection('tickerjournal')
+//       .insertOne(targetObj)
+//       .then(() => res.send({ message: 'Create ticker journal successful' }));
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).send({ message: e });
+//   }
+// };
+
 exports.createTickerJournal = (req, res) => {
   let targetObj = { ...req.body };
-  delete targetObj._id;
+  targetObj._id = util.getCounters('tickerjournal') + 1;
+  util.incrementCounter('tickerjournal');
   try {
     dbclient
       .recorddb()
       .collection('tickerjournal')
       .insertOne(targetObj)
-      .then(res.send({ message: 'Create ticker journal successful' }));
+      .then(() => res.send({ message: 'Create ticker journal successful' }));
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: e });

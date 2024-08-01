@@ -193,15 +193,15 @@ function EditSettings(props) {
       }),
     })
       .then((response) => {
-        tickerInfo.sellLimit = sellLimit;
-        tickerInfo.sellStop = sellStop;
-        tickerInfo.buyLimit = buyLimit;
-        tickerInfo.buyStop = buyStop;
-        tickerInfo.rating = rating;
-        tickerInfo.tickerClass = tickerClass;
-        tickerInfo.category = category;
-        tickerInfo.bcIndustry = bcIndustry;
-        tickerInfo.comment = comment;
+        tickerInfo.settings.sellLimit = sellLimit;
+        tickerInfo.settings.sellStop = sellStop;
+        tickerInfo.settings.buyLimit = buyLimit;
+        tickerInfo.settings.buyStop = buyStop;
+        tickerInfo.settings.rating = rating;
+        tickerInfo.settings.tickerClass = tickerClass;
+        tickerInfo.settings.category = category;
+        tickerInfo.settings.bcIndustry = bcIndustry;
+        tickerInfo.settings.comment = comment;
         onCancelClicked();
       })
       .catch((err) => {
