@@ -29,12 +29,13 @@ app.get('/importquotejson', importjson.importQuoteJson);
 
 //all accounts
 app.get('/rest/account', account.getAccounts);
-// app.get('/rest/account/tradeactivities', account.getTradeActivities);
-// app.get('/rest/stockreport', account.getStockReport);
+app.get('/rest/account/tradeactivities', account.getTradeActivities);
+app.get('/rest/stockreport', account.getStockReport);
 // app.get('/rest/accountreport/annual/all', account.getAllAnnualReports);
 // app.get('/rest/accountreport/monthly/all', account.getAllMonthlyReports);
 
 //individual accounts
+// holdings for individual account
 // app.get('/rest/accountreport/annual/:accountId', account.getAnnualReport);
 // app.get('/rest/accountreport/monthly/:accountId', account.getMonthlyReport);
 app.post('/rest/activity', account.postActivity);

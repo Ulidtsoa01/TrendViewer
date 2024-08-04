@@ -286,6 +286,129 @@ exports.getAccounts = function (req, res) {
     res.status(500).send({ message: e });
   }
 };
+exports.getTradeActivities = (req, res) => {
+  try {
+    dbclient
+      .recorddb()
+      .collection('activity')
+      .find()
+      .sort({ date: 1 })
+      .toArray()
+      .then((activities) => {
+        calcAccumulatedShares(activities);
+        const tradeActivities = [];
+        for (let obj of activities) {
+          if (obj.type !== 'Buy' && obj.type !== 'Sell' && obj.type !== 'Split') continue;
+          if (obj.accountId) {
+            obj.accountName = util.getAccounts(obj.accountId).name;
+          }
+          if (obj.tickerId) {
+            obj.tickerName = util.getTickerById(obj.tickerId).name;
+          }
+          tradeActivities.push(obj);
+        }
+        res.send(tradeActivities);
+      });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+const buildReport = (activities, dquotes, req, res) => {
+  const tickerToActivity = new Map();
+  for (const obj of activities) {
+    if ('tickerId' in obj && obj.tickerId > 0) {
+      if (tickerToActivity.has(obj.tickerId)) {
+        tickerToActivity.get(obj.tickerId).push(obj);
+      } else {
+        // tickerToActivity[obj.tickerId] = [obj];
+        tickerToActivity.set(obj.tickerId, [obj]);
+      }
+    }
+  }
+  const stockReport = [];
+  for (const [tickerId, listAct] of tickerToActivity) {
+    let cost = 0,
+      sale = 0,
+      shares = 0,
+      value = 0;
+    for (let obj of listAct) {
+      switch (obj.type) {
+        case 'Dividend':
+        case 'Gain':
+          sale += obj.amount;
+          break;
+        case 'Expense':
+          sale -= obj.amount;
+          break;
+        case 'Buy':
+          cost += obj.amount;
+          shares += obj.shares;
+          break;
+        case 'Sell':
+          sale += obj.amount;
+          shares -= obj.shares;
+          break;
+        case 'Split':
+          shares *= obj.amount / obj.shares;
+          break;
+        default:
+      }
+    }
+    let ticker = util.getTickerById(tickerId);
+    if (ticker.type === 'Fixed') {
+      continue;
+    }
+    if (shares > 0) {
+      const dq = dquotes.find((obj) => obj._id === ticker._id);
+      if (!dq) {
+        console.log('Missing daily quote for ticker: ' + ticker.name);
+      } else {
+        value = shares * dq.last;
+      }
+    }
+    let gain = sale + value - cost;
+    let gainPct = (gain * 100) / cost;
+    stockReport.push({ tickerId: ticker._id, tickerName: ticker.name, cost, sale, shares, value, gain, gainPct });
+  }
+  res.send(stockReport);
+};
+
+exports.getStockReport = (req, res) => {
+  let activities = null,
+    dquotes = null;
+
+  const onLoaded = () => {
+    if (activities && dquotes) {
+      buildReport(activities, dquotes, req, res);
+    }
+  };
+  try {
+    dbclient
+      .recorddb()
+      .collection('activity')
+      .find()
+      .sort({ date: 1 })
+      .toArray()
+      .then((acts) => {
+        activities = acts;
+        onLoaded();
+      });
+    dbclient
+      .quotedb()
+      .collection('dquote')
+      .find()
+      .toArray()
+      .then((dqs) => {
+        dquotes = dqs;
+        onLoaded();
+      });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
 
 exports.postActivity = function (req, res) {
   let targetObj = { ...req.body };
@@ -337,11 +460,11 @@ exports.getValueHistory = (req, res) => {
     dbclient
       .recorddb()
       .collection('accountvalue')
-      .find({ accountId: req.params.accountId })
+      .find({ accountId: Number(req.params.accountId) })
+      .sort({ date: -1 })
       .toArray()
       .then((accValues) => {
-        let acc = accValues;
-        res.send(acc);
+        res.send(accValues);
       });
   } catch (e) {
     console.error(e);

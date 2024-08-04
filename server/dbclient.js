@@ -41,6 +41,7 @@ client.connect().then(() => {
   console.log('Pinged your deployment. You successfully connected to MongoDB!');
 
   loadTickers();
+  util.updateAccounts();
   util.createCounters();
 });
 

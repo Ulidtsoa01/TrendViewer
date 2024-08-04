@@ -1,6 +1,7 @@
+const accounts = new Map();
+const counters = new Map();
 const tickerById = new Map();
 const tickerByName = new Map();
-const counters = new Map();
 const dbclient = require('./dbclient');
 
 exports.getTickerById = (id) => tickerById.get(id);
@@ -14,6 +15,26 @@ exports.updateTickers = (tickers) => {
 };
 
 exports.getTickerNames = () => tickerByName;
+
+exports.updateAccounts = () => {
+  try {
+    dbclient
+      .recorddb()
+      .collection('account')
+      .find()
+      .toArray()
+      .then((objs) => {
+        accounts.clear();
+        for (const obj of objs) {
+          accounts.set(obj._id, obj);
+        }
+      });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+exports.getAccounts = (key) => accounts.get(key);
 
 exports.createCounters = () => {
   try {
