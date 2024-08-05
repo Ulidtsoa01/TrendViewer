@@ -10,8 +10,6 @@ function AccountHome() {
   let { accountId } = useParams();
   const accounts = useRouteLoaderData('account');
   const [tabKey, setTabKey] = useState('home');
-  console.log(accountId);
-  //   console.log(accounts);
   const account = accounts.find((e) => e._id === Number(accountId));
 
   return (

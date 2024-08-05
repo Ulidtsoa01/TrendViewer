@@ -286,6 +286,466 @@ exports.getAccounts = function (req, res) {
     res.status(500).send({ message: e });
   }
 };
+
+const processAccount = (account, activities, dquotes) => {
+  const dquoteMap = new Map();
+  dquotes.forEach((dq) => dquoteMap.set(dq._id, dq));
+
+  // initialize account state
+  let state = {
+    originalCashAmount: account.cash,
+    cashAmount: account.cash,
+    holdingMap: new Map(), // tickerId to holding object
+  };
+
+  // apply one activity at a time to the state of the account
+  activities.forEach((act) => {
+    applyActivityToState(act, state);
+  });
+
+  // collect the result from the state to the account
+  account.originalCashAmount = state.originalCashAmount;
+  account.cashAmount = state.cashAmount;
+  account.holdingList = collectHoldings(state, dquoteMap);
+  account.totalAmount = account.cashAmount + account.holdingList.reduce((sum, h) => sum + h.value, 0); // sum up holding.value
+  account.gain = account.totalAmount - account.originalCashAmount;
+  account.gainPercent = account.gain / account.originalCashAmount;
+  // calcAccumulatedShares(acct.activityList);
+};
+
+const addCurrentAccountValue = (account, accountValues, activities, dquotes) => {
+  let lastValue = accountValues.length > 0 ? accountValues.slice(-1) : null;
+  let now = new Date();
+  // console.log(`Last value date: ${lastValue[0].date}, and current date is: ${now.getTime()}`);
+  // console.log(lastValue);
+  if (!lastValue || now.getTime() > lastValue[0].date) {
+    processAccount(account, activities, dquotes);
+    let newValue = {
+      accountId: account._id,
+      cash: account.cashAmount,
+      value: account.totalAmount,
+      date: now.getTime(),
+    };
+    accountValues.push(newValue);
+  }
+};
+
+// const adjustedMonthlyCostBasis = (act, valueDate) => {
+//     let actDateObj = new Date(act.date);
+//     let valueDateObj = new Date(valueDate);
+//     let actDay = actDateObj.getDate();
+//     let valueDay = valueDateObj.getDate();
+//     return act.amount * (valueDay - actDay) / valueDay;
+// };
+
+const adjustedPeriodCostBasis = (act, valueDate, previousPeriodDate) => {
+  return (act.amount * (valueDate - act.date)) / (valueDate - previousPeriodDate);
+};
+
+const calcAccountPeriodGain = (previousValueInfo, valueInfo, activities) => {
+  // the period can be a month or a year
+  // sum up all the Deposit or Withdraw activities within this month or year
+  let deposit = 0.0,
+    withdraw = 0.0;
+  let costBasis = previousValueInfo.value;
+  let nextActivity = activities.shift();
+  while (nextActivity && nextActivity.date <= valueInfo.date) {
+    switch (nextActivity.type) {
+      case 'Deposit':
+        deposit += nextActivity.amount;
+        costBasis += adjustedPeriodCostBasis(nextActivity, valueInfo.date, previousValueInfo.date);
+        break;
+      case 'Withdraw':
+        withdraw += nextActivity.amount;
+        costBasis -= adjustedPeriodCostBasis(nextActivity, valueInfo.date, previousValueInfo.date);
+        break;
+      default:
+        break;
+    }
+    nextActivity = activities.shift();
+  }
+  if (nextActivity) {
+    activities.unshift(nextActivity); // put it back for the next month
+  }
+  let gain = valueInfo.value - previousValueInfo.value - deposit + withdraw;
+  return {
+    deposit: deposit,
+    withdraw: withdraw,
+    gain: gain,
+    gainPercent: (100.0 * gain) / costBasis,
+  };
+};
+
+const sumUpAccountMonthlyValue = (accountValues) => {
+  // accountvalue is stored per account per month
+  // this is to sum all accountvalue's for this month across all accounts
+  let cash = 0,
+    value = 0;
+  let nextValue = accountValues.shift();
+  let periodDateObj = new Date(nextValue.date);
+  let periodYear = periodDateObj.getFullYear();
+  let periodMonth = periodDateObj.getMonth();
+  let valueYear = periodYear;
+  let valueMonth = periodMonth;
+  while (nextValue && valueYear === periodYear && valueMonth === periodMonth) {
+    // within an hour
+    cash += nextValue.cash;
+    value += nextValue.value;
+    nextValue = accountValues.shift();
+    if (nextValue) {
+      let nextValueDateObj = new Date(nextValue.date);
+      valueYear = nextValueDateObj.getFullYear();
+      valueMonth = nextValueDateObj.getMonth();
+    }
+  }
+  if (nextValue) {
+    accountValues.unshift(nextValue); // put it back for next month
+  }
+  return {
+    date: periodDateObj.getTime(),
+    cash: cash,
+    value: value,
+  };
+};
+
+const initPreviousMonthValueInfo = (firstValue) => {
+  let previousDate = new Date(firstValue.date);
+  let currentMonth = previousDate.getMonth();
+  if (currentMonth === 0) {
+    // January
+    let currentYear = previousDate.getFullYear();
+    previousDate.setFullYear(currentYear - 1);
+    previousDate.setMonth(11);
+  } else {
+    previousDate.setMonth(currentMonth - 1);
+  }
+  return {
+    cash: 0,
+    value: 0,
+    date: previousDate.getTime(),
+  };
+};
+
+const initPreviousYearValueInfo = (firstValue) => {
+  let previousDate = new Date(firstValue.date);
+  let currentYear = previousDate.getFullYear();
+  previousDate.setFullYear(currentYear - 1);
+  return {
+    cash: 0,
+    value: 0,
+    date: previousDate.getTime(),
+  };
+};
+
+const processAccountMonthlyReport = (account, accountValues, activities, dquotes, req, res) => {
+  if (accountValues.length === 0) {
+    // should not happen
+    res.send([]);
+    return;
+  }
+  // add the current value to the end of accountValues
+  addCurrentAccountValue(account, accountValues, activities, dquotes);
+  let infoList = [];
+  let previousValueInfo = initPreviousMonthValueInfo(accountValues[0]);
+  while (accountValues.length > 0) {
+    let valueInfo = sumUpAccountMonthlyValue(accountValues);
+    let gainInfo = calcAccountPeriodGain(previousValueInfo, valueInfo, activities);
+    let info = {
+      accountId: account._id,
+      accountName: account.name,
+      date: valueInfo.date,
+      cash: valueInfo.cash,
+      value: valueInfo.value,
+      deposit: gainInfo.deposit,
+      withdraw: gainInfo.withdraw,
+      gain: gainInfo.gain,
+      gainPercent: gainInfo.gainPercent,
+      dateString: new Date(valueInfo.date).toISOString(),
+    };
+
+    previousValueInfo = valueInfo;
+    infoList.push(info);
+  }
+  res.send(infoList);
+};
+
+const skipToDecemberOrLastValue = (accountValues, today) => {
+  if (accountValues.length <= 1) {
+    return;
+  }
+  let currentYear = today.getFullYear();
+  let nextValue = accountValues.shift();
+  let nextValueDateObj = new Date(nextValue.date);
+  if (nextValueDateObj.getFullYear() === currentYear) {
+    // just skip to the last value that was just added from current holdings
+    accountValues.splice(0, accountValues.length - 1);
+    return;
+  }
+  // skip to December
+  let nextValueDate = nextValue ? new Date(nextValue.date) : null;
+  while (nextValue && nextValueDate.getMonth() < 11) {
+    // 11 is December
+    nextValue = accountValues.shift();
+    nextValueDate = new Date(nextValue.date);
+  }
+  if (nextValue) {
+    accountValues.unshift(nextValue); // put it back for next year
+  }
+};
+
+const processAccountAnnualReport = (account, accountValues, activities, dquotes, req, res) => {
+  if (accountValues.length === 0) {
+    // should not happen
+    res.send([]);
+    return;
+  }
+  addCurrentAccountValue(account, accountValues, activities, dquotes);
+  let infoList = [];
+  let previousValueInfo = initPreviousYearValueInfo(accountValues[0]);
+  let today = new Date();
+  skipToDecemberOrLastValue(accountValues, today);
+  while (accountValues.length > 0) {
+    let valueInfo = sumUpAccountMonthlyValue(accountValues);
+    let gainInfo = calcAccountPeriodGain(previousValueInfo, valueInfo, activities);
+    let info = {
+      accountId: account._id,
+      accountName: account.name,
+      date: valueInfo.date,
+      cash: valueInfo.cash,
+      value: valueInfo.value,
+      deposit: gainInfo.deposit,
+      withdraw: gainInfo.withdraw,
+      gain: gainInfo.gain,
+      gainPercent: gainInfo.gainPercent,
+      dateString: new Date(valueInfo.date).toISOString(),
+    };
+
+    previousValueInfo = valueInfo;
+    infoList.push(info);
+    skipToDecemberOrLastValue(accountValues, today);
+  }
+  res.send(infoList);
+};
+
+const reportDataLoader = (accountId, processor, req, res) => {
+  let account = null,
+    accountValues = null,
+    activities = null,
+    dquotes = null;
+  let accountIdFilter = {};
+
+  if (accountId < 0) {
+    account = { _id: -1, name: 'Total', cash: 0.0 };
+  } else {
+    accountIdFilter = { accountId: accountId };
+  }
+
+  const onLoaded = () => {
+    if (account && accountValues && activities && dquotes) {
+      processor(account, accountValues, activities, dquotes, req, res);
+    }
+  };
+
+  try {
+    if (accountId >= 0) {
+      dbclient
+        .recorddb()
+        .collection('account')
+        .findOne({ _id: accountId })
+        .then((acct) => {
+          account = acct;
+          onLoaded();
+        });
+    }
+
+    dbclient
+      .recorddb()
+      .collection('accountvalue')
+      .find(accountIdFilter)
+      .sort({ date: 1 })
+      .toArray()
+      .then((values) => {
+        // oldest first
+        accountValues = values;
+        onLoaded();
+      });
+
+    dbclient
+      .recorddb()
+      .collection('activity')
+      .find(accountIdFilter)
+      .sort({ date: 1 })
+      .toArray()
+      .then((acts) => {
+        // oldest first
+        activities = acts;
+        onLoaded();
+      });
+
+    dbclient
+      .quotedb()
+      .collection('dquote')
+      .find({})
+      .toArray()
+      .then((dqs) => {
+        dquotes = dqs;
+        onLoaded();
+      });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.getMonthlyReport = (req, res) => {
+  let accountId = Number(req.params.id);
+  reportDataLoader(accountId, processAccountMonthlyReport, req, res);
+
+  // let account = null, accountValues = null, activities = null, dquotes = null;
+
+  // const onLoaded = () => {
+  //     if (account && accountValues && activities && dquotes) {
+  //         processAccountMonthlyReport(account, accountValues, activities, dquotes, req, res);
+  //     }
+  // };
+
+  // try {
+  //     dbclient.recorddb().collection("account").findOne({_id: accountId}).then((acct) => {
+  //         account = acct;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.recorddb().collection("accountvalue").find({accountId: accountId}).sort({ date: 1 }).toArray().then((values) => { // oldest first
+  //         accountValues = values;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.recorddb().collection("activity").find({accountId: accountId}).sort({ date: 1 }).toArray().then((acts) => { // oldest first
+  //         activities = acts;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.quotedb().collection("dquote").find({}).toArray().then((dqs) => {
+  //         dquotes = dqs;
+  //         onLoaded();
+  //     });
+  // } catch (e) {
+  //     console.error(e);
+  //     res.status(500).send({ message: e });
+  // }
+};
+
+exports.getAllMonthlyReports = (req, res) => {
+  reportDataLoader(-1, processAccountMonthlyReport, req, res);
+
+  // const account = {
+  //     _id: -1,
+  //     name: 'Total',
+  //     cash: 0.0
+  // };
+  // let accountValues = null, activities = null, dquotes = null;
+
+  // const onLoaded = () => {
+  //     if (accountValues && activities && dquotes) {
+  //         processAccountMonthlyReport(account, accountValues, activities, dquotes, req, res);
+  //     }
+  // };
+
+  // try {
+  //     dbclient.recorddb().collection("accountvalue").find({}).sort({ date: 1 }).toArray().then((values) => { // oldest first
+  //         accountValues = values;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.recorddb().collection("activity").find({}).sort({ date: 1 }).toArray().then((acts) => { // oldest first
+  //         activities = acts;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.quotedb().collection("dquote").find({}).toArray().then((dqs) => {
+  //         dquotes = dqs;
+  //         onLoaded();
+  //     });
+  // } catch (e) {
+  //     console.error(e);
+  //     res.status(500).send({ message: e });
+  // }
+};
+
+exports.getAnnualReport = (req, res) => {
+  let accountId = Number(req.params.id);
+  reportDataLoader(accountId, processAccountAnnualReport, req, res);
+
+  // let account = null, accountValues = null, activities = null, dquotes = null;
+
+  // const onLoaded = () => {
+  //     if (account && accountValues && activities && dquotes) {
+  //         processAccountAnnualReport(account, accountValues, activities, dquotes, req, res);
+  //     }
+  // };
+
+  // try {
+  //     dbclient.recorddb().collection("account").findOne({_id: accountId}).then((acct) => {
+  //         account = acct;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.recorddb().collection("accountvalue").find({accountId: accountId}).sort({ date: 1 }).toArray().then((values) => { // oldest first
+  //         accountValues = values;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.recorddb().collection("activity").find({accountId: accountId}).sort({ date: 1 }).toArray().then((acts) => { // oldest first
+  //         activities = acts;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.quotedb().collection("dquote").find({}).toArray().then((dqs) => {
+  //         dquotes = dqs;
+  //         onLoaded();
+  //     });
+  // } catch (e) {
+  //     console.error(e);
+  //     res.status(500).send({ message: e });
+  // }
+};
+
+exports.getAllAnnualReports = (req, res) => {
+  reportDataLoader(-1, processAccountAnnualReport, req, res);
+
+  // const account = {
+  //     _id: -1,
+  //     name: 'Total',
+  //     cash: 0.0
+  // };    let accountValues = null, activities = null, dquotes = null;
+
+  // const onLoaded = () => {
+  //     if (accountValues && activities && dquotes) {
+  //         processAccountAnnualReport(account, accountValues, activities, dquotes, req, res);
+  //     }
+  // };
+
+  // try {
+  //     dbclient.recorddb().collection("accountvalue").find({}).sort({ date: 1 }).toArray().then((values) => { // oldest first
+  //         accountValues = values;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.recorddb().collection("activity").find({}).sort({ date: 1 }).toArray().then((acts) => { // oldest first
+  //         activities = acts;
+  //         onLoaded();
+  //     });
+
+  //     dbclient.quotedb().collection("dquote").find({}).toArray().then((dqs) => {
+  //         dquotes = dqs;
+  //         onLoaded();
+  //     });
+  // } catch (e) {
+  //     console.error(e);
+  //     res.status(500).send({ message: e });
+  // }
+};
+
 exports.getTradeActivities = (req, res) => {
   try {
     dbclient
