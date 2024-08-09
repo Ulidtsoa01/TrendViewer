@@ -148,10 +148,11 @@ const collectHoldings = (state, dquoteMap) => {
     h.industry = ticker.industry;
     h.type = ticker.type;
     if (ticker.settings) {
-      h.tickerClass = ticker.settings.class;
-      h.comment = ticker.settings.comment;
       h.sellStop = ticker.settings.sellStop;
       h.buyLimit = ticker.settings.buyLimit;
+      h.tickerClass = ticker.settings.class;
+      h.category = ticker.settings.category;
+      h.comment = ticker.settings.comment;
     }
     h.cost = h.enterPrice * h.number;
     h.cost2 = h.activityList.reduce((sum, act) => sum + act.amount, 0); // sum up act.amount
@@ -165,8 +166,10 @@ const collectHoldings = (state, dquoteMap) => {
       const dq = dquoteMap.get(h.tickerId);
       if (!dq) {
         console.error(`DQuote missing for ${ticker.name}`);
+      } else {
+        h.lastPrice = dq.last;
+        h.value = h.number * dq.last;
       }
-      h.value = dq ? h.number * dq.last : 0;
     }
 
     h.gain = h.value + h.dividend - h.cost;
@@ -175,7 +178,7 @@ const collectHoldings = (state, dquoteMap) => {
   return holdingList;
 };
 
-const calcAccumulatedShares = (activityList) => {
+exports.calcAccumulatedShares = (activityList) => {
   const accuSharesByTickerId = new Map();
   activityList.forEach((act) => {
     if (act.type !== 'Buy' && act.type !== 'Sell' && act.type !== 'Split') {
@@ -190,8 +193,7 @@ const calcAccumulatedShares = (activityList) => {
         accuShare -= act.shares;
         break;
       case 'Split':
-        let splitRatio = act.amount / act.shares;
-        accuShare *= splitRatio;
+        accuShare *= act.amount / act.shares;
         break;
       default:
     }
@@ -200,7 +202,7 @@ const calcAccumulatedShares = (activityList) => {
   });
 };
 
-const processAccounts = (accounts, activities, dquotes, req, res) => {
+exports.calculateAccounts = (accounts, activities, dquotes) => {
   const dquoteMap = new Map();
   dquotes.forEach((dq) => dquoteMap.set(dq._id, dq));
 
@@ -219,6 +221,10 @@ const processAccounts = (accounts, activities, dquotes, req, res) => {
   // apply one activity at a time to the state of the account
   activities.forEach((act) => {
     let acct = accountMap.get(act.accountId);
+    if (act.tickerId) {
+      let ticker = util.getTickerById(act.tickerId);
+      act.tickerName = ticker.name;
+    }
     acct.activityList.push(act);
     applyActivityToState(act, acct.state);
   });
@@ -231,12 +237,10 @@ const processAccounts = (accounts, activities, dquotes, req, res) => {
     acct.totalAmount = acct.cashAmount + acct.holdingList.reduce((sum, h) => sum + h.value, 0); // sum up holding.value
     acct.gain = acct.totalAmount - acct.originalCashAmount;
     acct.gainPercent = acct.gain / acct.originalCashAmount;
-    calcAccumulatedShares(acct.activityList);
+    exports.calcAccumulatedShares(acct.activityList);
 
     delete acct.state;
   });
-
-  res.send(accounts);
 };
 
 exports.getAccounts = function (req, res) {
@@ -246,7 +250,8 @@ exports.getAccounts = function (req, res) {
 
   const onLoaded = () => {
     if (accounts && activities && dquotes) {
-      processAccounts(accounts, activities, dquotes, req, res);
+      exports.calculateAccounts(accounts, activities, dquotes);
+      res.send(accounts);
     }
   };
 
@@ -755,7 +760,7 @@ exports.getTradeActivities = (req, res) => {
       .sort({ date: 1 })
       .toArray()
       .then((activities) => {
-        calcAccumulatedShares(activities);
+        exports.calcAccumulatedShares(activities);
         const tradeActivities = [];
         for (let obj of activities) {
           if (obj.type !== 'Buy' && obj.type !== 'Sell' && obj.type !== 'Split') continue;

@@ -140,15 +140,13 @@ exports.updateTickerInfo = (req, res) => {
 };
 
 exports.modifySettings = (req, res) => {
-  let targetObj = { ...req.body };
-  delete targetObj.tickerId;
-  // dbclient.recorddb().collection('ticker').findOne({ _id: req.body._id });
-  // let ticker = util.getTickerById(req.tickerId);
+  delete req.body.tickerId;
+
   try {
     dbclient
       .recorddb()
       .collection('ticker')
-      .updateOne({ tickerId: req.tickerId }, [{ $set: { settings: { $mergeObjects: ['$settings', targetObj] } } }], {
+      .updateOne({ _id: Number(req.params.id) }, [{ $set: { settings: { $mergeObjects: ['$settings', req.body] } } }], {
         upsert: true,
       })
       .then(res.send({ message: 'Update ticker settings successful' }));

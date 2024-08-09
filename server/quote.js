@@ -30,15 +30,15 @@ exports.getHQuotesByTicker = function (req, res) {
       .find({ tickerId: Number(tickerId) })
       .sort({ year: -1, month: -1 })
       .toArray()
-      .then((hquotes) => {
-        let hqs = [];
-        hquotes.forEach((qym) => {
+      .then((hqs) => {
+        let hquotes = [];
+        hqs.forEach((qym) => {
           qym.quotes.forEach((q) => {
             q.dateStr = new Date(q.date).toISOString();
-            hqs.push(q);
+            hquotes.push(q);
           });
         });
-        res.send(hqs);
+        res.send(hquotes);
       });
   } catch (e) {
     console.error(e);
