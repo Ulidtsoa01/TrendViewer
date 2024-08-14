@@ -69,6 +69,13 @@ exports.incrementCounter = (key) => {
 
 exports.getCounters = (key) => counters.get(key);
 
+exports.PortfolioMap = {
+  core: 'Core',
+  watch: 'Under Watch',
+  rb: 'Rule Breaker',
+  hy: 'High Yield',
+};
+
 function parseNasdaqMonth(s) {
   switch (s) {
     case 'Jan':
@@ -121,4 +128,95 @@ exports.parseNasdaqDate = (dateString) => {
   }
 
   return date;
+};
+
+// for climax
+const CLIMAX_RANGE = 100;
+const CLIMAX_WINDOW = 20;
+
+const calcSMA = (smaDays, quotes, sma) => {
+  let sum = 0;
+  for (let i = 0; i < smaDays; i++) {
+    sum += quotes[i].close;
+  }
+  sma[0] = sum / smaDays;
+  for (let j = 1; j < CLIMAX_RANGE; j++) {
+    sum -= quotes[j - 1].close;
+    sum += quotes[j - 1 + smaDays].close;
+    sma[j] = sum / smaDays;
+  }
+};
+
+const calcClimax = (smaDays, sma, sma2, climaxInfo) => {
+  let max = -1000000.0;
+  let maxday = 0;
+  let min = 1000000.0;
+  let minday = 0;
+  for (let i = 0; i < CLIMAX_RANGE; i++) {
+    let diff = sma[i] - sma2[i];
+    if (diff > max) {
+      max = diff;
+      maxday = i;
+    }
+    if (diff < min) {
+      min = diff;
+      minday = i;
+    }
+  }
+
+  if (minday < CLIMAX_WINDOW) {
+    climaxInfo.buyClimax += `, ${smaDays}-${minday}`;
+  }
+
+  if (maxday < CLIMAX_WINDOW) {
+    climaxInfo.sellClimax += `, ${smaDays}-${maxday}`;
+  }
+};
+
+const initClimaxInfo = () => {
+  return {
+    SMA2: new Array(CLIMAX_RANGE),
+    SMA5: new Array(CLIMAX_RANGE),
+    SMA13: new Array(CLIMAX_RANGE),
+    SMA18: new Array(CLIMAX_RANGE),
+    SMA25: new Array(CLIMAX_RANGE),
+    SMA50: new Array(CLIMAX_RANGE),
+    SMA200: new Array(CLIMAX_RANGE),
+    buyClimax: '',
+    sellClimax: '',
+  };
+};
+
+const prepareSMA = (quotes, climaxInfo) => {
+  calcSMA(2, quotes, climaxInfo.SMA2);
+  calcSMA(5, quotes, climaxInfo.SMA5);
+  calcSMA(13, quotes, climaxInfo.SMA13);
+  calcSMA(18, quotes, climaxInfo.SMA18);
+  calcSMA(25, quotes, climaxInfo.SMA25);
+  calcSMA(50, quotes, climaxInfo.SMA50);
+  calcSMA(200, quotes, climaxInfo.SMA200);
+};
+
+exports.produceClimax = (tickerName, quotes) => {
+  if (quotes.length < 200 + CLIMAX_RANGE) {
+    if (quotes.length > 0) {
+      console.log(`Skip calculating climax for ${tickerName}, due to insufficient quote size at ${quotes.length}`);
+    }
+    return ['NoData', 'NoData'];
+  }
+
+  const climaxInfo = initClimaxInfo();
+  prepareSMA(quotes, climaxInfo);
+
+  calcClimax(2, climaxInfo.SMA2, climaxInfo.SMA200, climaxInfo);
+  calcClimax(5, climaxInfo.SMA5, climaxInfo.SMA200, climaxInfo);
+  calcClimax(13, climaxInfo.SMA13, climaxInfo.SMA200, climaxInfo);
+  calcClimax(18, climaxInfo.SMA18, climaxInfo.SMA50, climaxInfo);
+  calcClimax(25, climaxInfo.SMA25, climaxInfo.SMA200, climaxInfo);
+  calcClimax(50, climaxInfo.SMA50, climaxInfo.SMA200, climaxInfo);
+
+  let buyClimax = climaxInfo.buyClimax.length === 0 ? '' : climaxInfo.buyClimax.substring(2);
+  let sellClimax = climaxInfo.sellClimax.length === 0 ? '' : climaxInfo.sellClimax.substring(2);
+
+  return [buyClimax, sellClimax];
 };

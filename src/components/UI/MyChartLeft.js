@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { json } from 'react-router-dom';
+import { Link, json } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import styles from './MyChartLeft.module.css';
@@ -98,10 +98,7 @@ const MyChartLeft = ({ data, stockList, index, toPrevious, toNext }) => {
         </span>
       </p>
       <div className={styles.externalLinksRow}>
-        <a href={'http://localhost:8080/#/ticker/id/' + data.tickerId} target="_blank" rel="noreferrer">
-          Ticker
-        </a>
-        {/* <Link></Link> */}
+        {<Link to={'/ticker/' + data.tickerName}>Ticker</Link>}
         <a href={'https://seekingalpha.com/symbol/' + data.tickerName} target="_blank" rel="noreferrer">
           Seeking Alpha
         </a>
@@ -151,7 +148,7 @@ const MyChartLeft = ({ data, stockList, index, toPrevious, toNext }) => {
                 <td>{act.type}</td>
                 <td>{Math.round(act.price * 1000) / 1000}</td>
                 <td>{act.shares}</td>
-                <td>{act.accumulatedShares}</td>
+                <td>{Math.round(act.accumulatedShares * 1000) / 1000}</td>
                 <td>{act.amount}</td>
                 <td>{act.accountName}</td>
               </tr>

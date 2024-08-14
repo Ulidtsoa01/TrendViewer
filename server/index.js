@@ -22,15 +22,22 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Hello from server' });
 });
 
-app.get('/rest/holding', portfolio.getHoldings);
-app.get('/rest/stocklist/chartdata/:tickerName/daily', portfolio.getChartData);
-app.get('/rest/hot', portfolio.getHotItems);
 app.get('/dquotes', quote.getDQuotes);
 app.get('/hquotes/:id', quote.getHQuotesByTicker);
 
 // import
 app.get('/importjson', importjson.importJson);
 app.get('/importquotejson', importjson.importQuoteJson);
+
+//// portfolio ////
+app.get('/rest/holding', portfolio.getHoldings);
+app.get('/rest/stocklist/chartdata/:tickerName/daily', portfolio.getChartData);
+app.get('/rest/hot', portfolio.getHotItems);
+
+//watch
+app.get('/rest/watch/items/:watchId', portfolio.getWatchItems);
+app.post('/rest/watch/add/:watchId/:tickerName', portfolio.addWatchItem);
+app.post('/rest/watch/remove/:watchId/:tickerName', portfolio.removeWatchItem);
 
 //// account ////
 

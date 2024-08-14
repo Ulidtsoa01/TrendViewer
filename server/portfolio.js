@@ -24,6 +24,67 @@ const buildHoldings = (accounts, activities, dquotes) => {
   return holdingArray;
 };
 
+const calcClimax = (portfolio, quoteBlocks) => {
+  const quoteListMap = new Map();
+  quoteBlocks.forEach((block) => {
+    let quoteList = quoteListMap.get(block.tickerId);
+    if (quoteList) {
+      quoteList = quoteList.concat(block.quotes);
+      quoteListMap.set(block.tickerId, quoteList);
+    } else {
+      quoteListMap.set(block.tickerId, block.quotes);
+    }
+  });
+
+  portfolio.forEach((p) => {
+    let ticker = util.getTickerById(p.tickerId);
+    if (ticker.type !== 'Fixed') {
+      let quotes = quoteListMap.get(p.tickerId);
+      if (quotes && quotes.length > 0) {
+        let [buyClimax, sellClimax] = util.produceClimax(p.tickerName, quotes);
+        p.buyClimax = buyClimax;
+        p.sellClimax = sellClimax;
+      } else {
+        console.log(`No quotes found for ${p.tickerName}`);
+      }
+    }
+  });
+  return portfolio;
+};
+
+const loadQuotesToCalcClimax = (portfolio, res) => {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const tickerIds = portfolio.map((p) => p.tickerId);
+
+  const query = {
+    $and: [
+      { tickerId: { $in: tickerIds } },
+      {
+        $or: [{ year: currentYear }, { year: currentYear - 1 }, { $and: [{ year: currentYear - 2 }, { month: { $gt: currentMonth } }] }],
+      },
+    ],
+  };
+
+  try {
+    dbclient
+      .quotedb()
+      .collection('hquote')
+      .find(query)
+      .sort({ year: -1, month: -1 })
+      .toArray()
+      .then((quoteBlocks) => {
+        res.send(calcClimax(portfolio, quoteBlocks));
+      });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({
+      message: e,
+    });
+  }
+};
+
 exports.getHoldings = (req, res) => {
   let accounts = null,
     activities = null,
@@ -31,7 +92,8 @@ exports.getHoldings = (req, res) => {
 
   const onLoaded = () => {
     if (accounts && activities && dquotes) {
-      res.send(buildHoldings(accounts, activities, dquotes));
+      let holdings = buildHoldings(accounts, activities, dquotes);
+      loadQuotesToCalcClimax(holdings, res);
     }
   };
   try {
@@ -132,66 +194,65 @@ exports.getChartData = (req, res) => {
   }
 };
 
-const buildHotItems = (accounts, activities, dquotes, hotTickers, req, res) => {
+const buildHotItems = (dquotes, hotTickers) => {
   const hotItems = [];
-  const holdings = buildHoldings(accounts, activities, dquotes);
+  // const holdings = buildHoldings(accounts, activities, dquotes);
 
   for (const tickerName of hotTickers) {
     let t = util.getTickerByName(tickerName);
-    const h = holdings.find((obj) => obj.tickerId === t._id);
-    if (h) {
-      hotItems.push(h);
-      continue;
-    }
-    let hotItem = { tickerId: t._id, tickerName: t.name, description: t.description, type: t.type, industry: t.industry, sector: t.sector };
+    // const h = holdings.find((obj) => obj.tickerId === t._id);
+    // if (h) {
+    //   hotItems.push(h);
+    //   continue;
+    // }
+    let item = { tickerId: t._id, tickerName: t.name, description: t.description, type: t.type, industry: t.industry, sector: t.sector };
 
     const dq = dquotes.find((obj) => obj._id === t._id);
-    if (dq) hotItem.lastPrice = dq.last;
+    if (dq) item.lastPrice = dq.last;
 
     if (t.settings) {
-      if (t.settings.comment) hotItem.comment = t.settings.comment;
-      if (t.settings.tickerClass) hotItem.tickerClass = t.settings.tickerClass;
-      if (t.settings.category) hotItem.category = t.settings.category;
-      if (t.settings.sellStop) hotItem.sellStop = t.settings.sellStop;
-      if (t.settings.buyLimit) hotItem.buyLimit = t.settings.buyLimit;
+      if (t.settings.comment) item.comment = t.settings.comment;
+      if (t.settings.tickerClass) item.tickerClass = t.settings.tickerClass;
+      if (t.settings.category) item.category = t.settings.category;
+      if (t.settings.sellStop) item.sellStop = t.settings.sellStop;
+      if (t.settings.buyLimit) item.buyLimit = t.settings.buyLimit;
     }
 
-    hotItems.push(hotItem);
+    hotItems.push(item);
   }
-  res.send(hotItems);
+  return hotItems;
 };
 
 exports.getHotItems = (req, res) => {
-  let accounts = null,
-    activities = null,
-    dquotes = null,
+  let dquotes = null,
     hotTickers = null;
 
   const onLoaded = () => {
-    if (accounts && activities && dquotes && hotTickers) {
-      buildHotItems(accounts, activities, dquotes, hotTickers, req, res);
+    if (dquotes && hotTickers) {
+      let hot = buildHotItems(dquotes, hotTickers);
+      loadQuotesToCalcClimax(hot, res);
     }
   };
   try {
-    dbclient
-      .recorddb()
-      .collection('account')
-      .find({}, { sort: { name: 1 } })
-      .toArray()
-      .then((accts) => {
-        accounts = accts;
-        onLoaded();
-      });
-    dbclient
-      .recorddb()
-      .collection('activity')
-      .find()
-      .sort({ date: 1 })
-      .toArray()
-      .then((acts) => {
-        activities = acts;
-        onLoaded();
-      });
+    // dbclient
+    //   .recorddb()
+    //   .collection('account')
+    //   .find({}, { sort: { name: 1 } })
+    //   .toArray()
+    //   .then((accts) => {
+    //     accounts = accts;
+    //     onLoaded();
+    //   });
+    // dbclient
+    //   .recorddb()
+    //   .collection('activity')
+    //   .find()
+    //   .sort({ date: 1 })
+    //   .toArray()
+    //   .then((acts) => {
+    //     activities = acts;
+    //     onLoaded();
+    //   });
     dbclient
       .quotedb()
       .collection('dquote')
@@ -208,6 +269,124 @@ exports.getHotItems = (req, res) => {
       .then((p) => {
         hotTickers = p.tickers;
         onLoaded();
+      });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+const buildWatchItems = (dquotes, pTickers) => {
+  const watchItems = [];
+
+  for (const tickerName of pTickers) {
+    let t = util.getTickerByName(tickerName);
+    let item = { tickerId: t._id, tickerName: t.name, description: t.description, type: t.type, industry: t.industry, sector: t.sector };
+
+    const dq = dquotes.find((obj) => obj._id === t._id);
+    if (dq) item.lastPrice = dq.last;
+
+    if (t.settings) {
+      if (t.settings.comment) item.comment = t.settings.comment;
+      if (t.settings.tickerClass) item.tickerClass = t.settings.tickerClass;
+      if (t.settings.category) item.category = t.settings.category;
+      if (t.settings.sellStop) item.sellStop = t.settings.sellStop;
+      if (t.settings.buyLimit) item.buyLimit = t.settings.buyLimit;
+    }
+
+    watchItems.push(item);
+  }
+  return watchItems;
+};
+
+exports.getWatchItems = (req, res) => {
+  const portfolioName = util.PortfolioMap[req.params.watchId];
+
+  let dquotes = null,
+    pTickers = null;
+
+  const onLoaded = () => {
+    if (dquotes && pTickers) {
+      let portfolio = buildWatchItems(dquotes, pTickers);
+      loadQuotesToCalcClimax(portfolio, res);
+    }
+  };
+  try {
+    dbclient
+      .quotedb()
+      .collection('dquote')
+      .find()
+      .toArray()
+      .then((dqs) => {
+        dquotes = dqs;
+        onLoaded();
+      });
+    dbclient
+      .recorddb()
+      .collection('portfolio')
+      .findOne({ name: portfolioName })
+      .then((p) => {
+        pTickers = p.tickers;
+        onLoaded();
+      });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+const updatePortfolioTickers = (pId, tickerArray, res) => {
+  try {
+    dbclient
+      .recorddb()
+      .collection('portfolio')
+      .updateOne({ _id: pId }, { $set: { tickers: tickerArray } }, { upsert: true })
+      .then(res.send({ message: 'Update porfolio tickers successful' }));
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.addWatchItem = (req, res) => {
+  const portfolioName = util.PortfolioMap[req.params.watchId];
+  const tickerName = req.params.tickerName;
+
+  try {
+    dbclient
+      .recorddb()
+      .collection('portfolio')
+      .findOne({ name: portfolioName })
+      .then((p) => {
+        let tickerArray = p.tickers;
+        if (tickerArray.indexOf(tickerName) === -1) {
+          tickerArray.push(tickerName);
+          tickerArray.sort();
+          updatePortfolioTickers(p._id, tickerArray, res);
+        } else {
+          res.send({ message: 'Ticker already added' });
+        }
+      });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.removeWatchItem = (req, res) => {
+  const portfolioName = util.PortfolioMap[req.params.watchId];
+
+  try {
+    dbclient
+      .recorddb()
+      .collection('portfolio')
+      .findOne({ name: portfolioName })
+      .then((p) => {
+        let tickerArray = p.tickers;
+        const index = tickerArray.indexOf(req.params.tickerName);
+        if (index > -1) {
+          tickerArray.splice(index, 1);
+        }
+        updatePortfolioTickers(p._id, tickerArray, res);
       });
   } catch (e) {
     console.error(e);
