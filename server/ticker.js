@@ -161,46 +161,13 @@ exports.deleteTickerInfo = (req, res) => {
     dbclient
       .recorddb()
       .collection('ticker')
-      .deleteOne({ _id: req.params.id })
+      .deleteOne({ _id: Number(req.params.id) })
       .then(res.send({ message: 'Delete ticker successful' }));
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: e });
   }
 };
-
-// exports.createTickerJournal = (req, res) => {
-//   try {
-//     dbclient
-//       .recorddb()
-//       .collection('tickerjournal')
-//       .find()
-//       .sort({ _id: -1 })
-//       .limit(1)
-//       .toArray()
-//       .then((objs) => {
-//         console.log(objs);
-//         insertTickerJournal(req, res, objs ? objs[0]._id : 0);
-//       });
-//   } catch (e) {
-//     console.error(e);
-//   }
-// };
-
-// const insertTickerJournal = (req, res, maxID) => {
-//   let targetObj = { ...req.body };
-//   try {
-//     targetObj._id = maxID + 1;
-//     dbclient
-//       .recorddb()
-//       .collection('tickerjournal')
-//       .insertOne(targetObj)
-//       .then(() => res.send({ message: 'Create ticker journal successful' }));
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).send({ message: e });
-//   }
-// };
 
 exports.createTickerJournal = (req, res) => {
   let targetObj = { ...req.body };
@@ -239,7 +206,7 @@ exports.deleteTickerJournal = (req, res) => {
     dbclient
       .recorddb()
       .collection('tickerjournal')
-      .deleteOne({ _id: req.params.id })
+      .deleteOne({ _id: Number(req.params.id) })
       .then(res.send({ message: 'Delete ticker journal successful' }));
   } catch (e) {
     console.error(e);
@@ -252,7 +219,7 @@ exports.deleteHQuote = (req, res) => {
     dbclient
       .quotedb()
       .collection('hquote')
-      .deleteOne({ _id: req.params.id })
+      .deleteOne({ _id: Number(req.params.id) })
       .then(res.send({ message: 'Delete hquote successful' }));
   } catch (e) {
     console.error(e);

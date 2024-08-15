@@ -1,13 +1,12 @@
-// server/index.js
-
 const express = require('express');
 const cors = require('cors');
 const dbclient = require('./dbclient');
 const importjson = require('./importjson');
 const account = require('./account');
-const quote = require('./quote');
+const journal = require('./journal');
 const ticker = require('./ticker');
 const portfolio = require('./portfolio');
+const quote = require('./quote');
 
 const PORT = process.env.PORT || 3001;
 
@@ -25,9 +24,15 @@ app.get('/api', (req, res) => {
 app.get('/dquotes', quote.getDQuotes);
 app.get('/hquotes/:id', quote.getHQuotesByTicker);
 
-// import
+//import
 app.get('/importjson', importjson.importJson);
 app.get('/importquotejson', importjson.importQuoteJson);
+
+//journal
+app.get('/rest/journal', journal.getJournal);
+app.post('/rest/journal/update', journal.createJournal);
+app.put('/rest/journal/update', journal.updateJournal);
+app.delete('/rest/journal/:id', journal.deleteJournal);
 
 //// portfolio ////
 app.get('/rest/holding', portfolio.getHoldings);
@@ -66,9 +71,9 @@ app.put('/rest/tinfo/:id/settings', ticker.modifySettings);
 app.delete('/rest/tinfo/:id', ticker.deleteTickerInfo);
 
 // ticker journal
-app.post('/rest/journal/normal/update', ticker.createTickerJournal);
-app.put('/rest/journal/normal/update', ticker.updateTickerJournal);
-app.delete('/rest/journal/normal/:id', ticker.deleteTickerJournal);
+app.post('/rest/tickerjournal/update', ticker.createTickerJournal);
+app.put('/rest/tickerjournal/update', ticker.updateTickerJournal);
+app.delete('/rest/tickerjournal/:id', ticker.deleteTickerJournal);
 
 // ticker hquote
 app.get('/rest/hquote/daily/:id', quote.getHQuotesByTicker);

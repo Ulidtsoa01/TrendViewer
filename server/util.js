@@ -8,7 +8,7 @@ exports.getTickerById = (id) => tickerById.get(id);
 exports.getTickerByName = (name) => tickerByName.get(name);
 
 exports.updateTickers = (tickers) => {
-  tickers.map((t) => {
+  tickers.forEach((t) => {
     tickerById.set(t._id, t);
     tickerByName.set(t.name, t);
   });
@@ -57,6 +57,16 @@ exports.createCounters = () => {
       .toArray()
       .then((objs) => {
         counters.set('activity', objs[0]._id);
+      });
+    dbclient
+      .recorddb()
+      .collection('marketassessment')
+      .find()
+      .sort({ _id: -1 })
+      .limit(1)
+      .toArray()
+      .then((objs) => {
+        counters.set('marketassessment', objs[0]._id);
       });
   } catch (e) {
     console.error(e);

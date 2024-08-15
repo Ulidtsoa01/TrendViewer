@@ -11,8 +11,6 @@ import HotSlide from './components/hot/HotSlide.js';
 import { loader as slideLoader } from './components/UI/MyChart.js';
 import WatchTable, { loader as watchLoader } from './components/watch/WatchTable.js';
 import WatchSlide from './components/watch/WatchSlide.js';
-import ActivityTable, { loader as activityLoader } from './components/activity/ActivityTable.js';
-import ActivityEdit from './components/activity/ActivityEdit.js';
 import TickerHome from './components/ticker/TickerHome.js';
 import TickerGeneral, { loader as tickerLoader } from './components/ticker/TickerGeneral.js';
 import MarketHome, { loader as marketJournalLoader } from './components/market/MarketHome.js';
@@ -28,72 +26,54 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       {
-        path: 'account', 
+        path: 'account',
         id: 'account',
         loader: accountLoader,
         children: [
-          { index: true, element: <AccountsHome />},
+          { index: true, element: <AccountsHome /> },
           { path: ':accountId', element: <AccountHome /> },
-        ]
+        ],
       },
       {
-        path: 'holdings', 
+        path: 'holdings',
         id: 'holdings',
         loader: holdingLoader,
         children: [
-          { index: true, element: <HoldingTable />},
+          { index: true, element: <HoldingTable /> },
           { path: 'slide/:ticker', element: <HoldingSlide />, loader: slideLoader },
-        ]
+        ],
       },
       {
-        path: 'hot', 
+        path: 'hot',
         id: 'hot',
         loader: hotLoader,
         children: [
-          { index: true, element: <HotTable />},
+          { index: true, element: <HotTable /> },
           { path: 'slide/:ticker', element: <HotSlide />, loader: slideLoader },
-        ]
+        ],
       },
-      { 
+      {
         path: 'watch',
         id: 'watch',
         children: [
-          { 
+          {
             path: ':watchId',
-            id: 'watchId',            
+            id: 'watchId',
             children: [
-              { index: true, element: <WatchTable />, loader: watchLoader},
+              { index: true, element: <WatchTable />, loader: watchLoader },
               { path: 'slide/:ticker', element: <WatchSlide />, loader: slideLoader },
-            ]
+            ],
           },
-        ]
+        ],
       },
       { path: 'market', id: 'market', element: <MarketHome />, loader: marketJournalLoader },
-      { 
-        path: 'activities',
-        id: 'activities',
-        children: [
-          { index: true, element: <ActivityTable />},
-          {
-            id: 'accountId', 
-            path: ':accountId', 
-            loader: activityLoader,
-            children: [
-              { index: true, element: <ActivityTable />},
-              { path: 'new', element: <ActivityEdit /> },
-              { path: 'edit/:activityId', element: <ActivityEdit /> },
-            ]
-          },
-        ]
-      },
-      { 
-        path: 'ticker', 
+      {
+        path: 'ticker',
         id: 'tickerHome',
         children: [
-          { index: true, element: <TickerHome />},
+          { index: true, element: <TickerHome /> },
           { path: ':tickerName', id: 'tickerGeneral', element: <TickerGeneral />, loader: tickerLoader },
-        ]
-
+        ],
       },
     ],
   },

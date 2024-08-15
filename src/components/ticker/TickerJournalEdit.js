@@ -16,7 +16,7 @@ function TickerJournalEdit(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log('handleSubmit called');
-    fetch('/rest/journal/normal/update', {
+    fetch('/rest/tickerjournal/update', {
       method: journal ? 'PUT' : 'POST',
       mode: 'cors',
       headers: {
@@ -56,7 +56,7 @@ function TickerJournalEdit(props) {
   const handleDeleteClicked = () => {
     // console.log('handleDeleteClicked called');
     if (journal) {
-      fetch('/rest/journal/normal/' + journal._id, {
+      fetch('/rest/tickerjournal/' + journal._id, {
         method: 'DELETE',
         mode: 'cors',
         headers: {

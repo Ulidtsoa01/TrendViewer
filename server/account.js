@@ -912,7 +912,7 @@ exports.deleteActivity = (req, res) => {
     dbclient
       .recorddb()
       .collection('activity')
-      .deleteOne({ _id: req.params.id })
+      .deleteOne({ _id: Number(req.params.id) })
       .then(res.send({ message: 'Delete activity successful' }));
   } catch (e) {
     console.error(e);

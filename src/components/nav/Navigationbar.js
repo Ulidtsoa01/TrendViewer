@@ -86,19 +86,6 @@ function Navigationbar() {
             <Nav.Link as={Link} to="/market">
               Market
             </Nav.Link>
-            <NavDropdown title="Activities" id="activities">
-              <NavDropdown.Item as={Link} to={'/activities/0?name=' + btoa('All Accounts')}>
-                All
-              </NavDropdown.Item>
-              {accounts &&
-                accounts.map((acct) => {
-                  return (
-                    <NavDropdown.Item as={Link} to={'/activities/' + acct['id']} key={acct['id']}>
-                      {acct['name']}
-                    </NavDropdown.Item>
-                  );
-                })}
-            </NavDropdown>
             <Nav.Link as={Link} to="/ticker">
               Ticker
             </Nav.Link>
