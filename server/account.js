@@ -85,7 +85,7 @@ const applyActivityToHolding = (act, holding) => {
   }
 };
 
-const applyActivityToState = (act, state) => {
+exports.applyActivityToState = (act, state) => {
   switch (act.type) {
     case 'Deposit':
       state.originalCashAmount += act.amount;
@@ -226,7 +226,7 @@ exports.calculateAccounts = (accounts, activities, dquotes) => {
       act.tickerName = ticker.name;
     }
     acct.activityList.push(act);
-    applyActivityToState(act, acct.state);
+    exports.applyActivityToState(act, acct.state);
   });
 
   // collect the result from the state to the account
@@ -305,7 +305,7 @@ const processAccount = (account, activities, dquotes) => {
 
   // apply one activity at a time to the state of the account
   activities.forEach((act) => {
-    applyActivityToState(act, state);
+    exports.applyActivityToState(act, state);
   });
 
   // collect the result from the state to the account

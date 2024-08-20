@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dbclient = require('./dbclient');
-const importjson = require('./importjson');
+const backup = require('./backup');
 const account = require('./account');
 const journal = require('./journal');
 const ticker = require('./ticker');
@@ -14,8 +14,8 @@ const app = express();
 
 app.use(cors());
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '300mb' }));
+app.use(express.json({ limit: '300mb' }));
 
 app.get('/api', (req, res) => {
   res.json({ message: 'Hello from server' });
@@ -24,9 +24,7 @@ app.get('/api', (req, res) => {
 app.get('/dquotes', quote.getDQuotes);
 app.get('/hquotes/:id', quote.getHQuotesByTicker);
 
-//import
-app.get('/importjson', importjson.importJson);
-app.get('/importquotejson', importjson.importQuoteJson);
+// app.post('/rest/action/updateaccountvalues', value.updateAccountValues);
 
 //journal
 app.get('/rest/journal', journal.getJournal);
@@ -78,6 +76,15 @@ app.delete('/rest/tickerjournal/:id', ticker.deleteTickerJournal);
 // ticker hquote
 app.get('/rest/hquote/daily/:id', quote.getHQuotesByTicker);
 app.post('/rest/action/deletequotes/:id', ticker.deleteHQuote);
+
+//// backup ////
+app.post('/rest/importrecordjson', backup.importRecordJson);
+app.post('/rest/importquotejson', backup.importQuoteJson);
+app.get('/rest/exportrecordjson', backup.exportRecordJson);
+app.get('/rest/exportquotejson', backup.exportQuoteJson);
+
+app.get('/rest/old/importjson', backup.importJsonOld);
+app.get('/rest/old/importquotejson', backup.importQuoteJsonOld);
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

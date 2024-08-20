@@ -2,6 +2,68 @@ const fs = require('fs');
 const dbclient = require('./dbclient');
 const util = require('./util');
 
+exports.exportRecordJson = async function (req, res) {
+  const dbnames = ['ticker', 'tickerjournal', 'marketassessment', 'portfolio', 'account', 'activity', 'accountvalue'];
+
+  try {
+    const backup = {};
+    for (const item of dbnames) {
+      backup[item] = await dbclient.recorddb().collection(item).find().toArray();
+    }
+    const json = JSON.stringify(backup, null, ' ');
+    res.send(json);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.exportQuoteJson = async function (req, res) {
+  const dbnames = ['dquote', 'hquote'];
+
+  try {
+    const backup = {};
+    for (const item of dbnames) {
+      backup[item] = await dbclient.quotedb().collection(item).find().toArray();
+    }
+    const json = JSON.stringify(backup, null, ' ');
+    res.send(json);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.importRecordJson = (req, res) => {
+  const backup = { ...req.body };
+  const dbnames = Object.keys(backup);
+  try {
+    for (const item of dbnames) {
+      dbclient.recorddb().collection(item).insertMany(backup[item]);
+      // .then(res.send({ message: 'Inserted ' + item }));
+    }
+    res.send({ message: 'Inserting ' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.importQuoteJson = (req, res) => {
+  const backup = { ...req.body };
+  const dbnames = Object.keys(backup);
+  try {
+    for (const item of dbnames) {
+      dbclient.quotedb().collection(item).insertMany(backup[item]);
+      // .then(res.send({ message: 'Inserted ' + item }));
+    }
+    res.send({ message: 'Inserting ' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
 const importTickers = (tickers, settings, res) => {
   tickers.forEach((t) => {
     t._id = t.id;
@@ -63,18 +125,14 @@ const importTickerJournals = (tickerJournals, res) => {
   });
 
   try {
-    let tickerJournalCollection = dbclient
-      .recorddb()
-      .collection('tickerjournal');
+    let tickerJournalCollection = dbclient.recorddb().collection('tickerjournal');
     tickerJournalCollection.insertMany(journals).then((result) => {
       let message = `${result.insertedCount} ticker journals were inserted.`;
       console.log(message);
-      tickerJournalCollection
-        .createIndex({ tickerId: 1, date: -1 })
-        .then((result) => {
-          // console.log(result);
-          console.log('    tickerid/date index created for tickerjournal');
-        });
+      tickerJournalCollection.createIndex({ tickerId: 1, date: -1 }).then((result) => {
+        // console.log(result);
+        console.log('    tickerid/date index created for tickerjournal');
+      });
     });
   } catch (e) {
     console.error(e);
@@ -92,9 +150,7 @@ const importMarketAssessments = (marketAssessments, res) => {
   });
 
   try {
-    let marketAssessmentCollection = dbclient
-      .recorddb()
-      .collection('marketassessment');
+    let marketAssessmentCollection = dbclient.recorddb().collection('marketassessment');
     marketAssessmentCollection.insertMany(marketAssessments).then((result) => {
       let message = `${result.insertedCount} market assessments were inserted.`;
       console.log(message);
@@ -172,18 +228,14 @@ const importAccounts = (accounts, res) => {
     activityCollection.insertMany(activities).then((result) => {
       let message = `${result.insertedCount} activities were inserted.`;
       console.log(message);
-      activityCollection
-        .createIndex({ accountId: 1, date: -1 })
-        .then((result) => {
-          // console.log(result);
-          console.log('    accountId/date index created for activity');
-        });
-      activityCollection
-        .createIndex({ tickerId: 1, date: -1 })
-        .then((result) => {
-          // console.log(result);
-          console.log('    tickerId/date index created for activity');
-        });
+      activityCollection.createIndex({ accountId: 1, date: -1 }).then((result) => {
+        // console.log(result);
+        console.log('    accountId/date index created for activity');
+      });
+      activityCollection.createIndex({ tickerId: 1, date: -1 }).then((result) => {
+        // console.log(result);
+        console.log('    tickerId/date index created for activity');
+      });
       activityCollection.createIndex({ date: -1 }).then((result) => {
         // console.log(result);
         console.log('    date index created for activity');
@@ -194,12 +246,10 @@ const importAccounts = (accounts, res) => {
     accountValueCollection.insertMany(values).then((result) => {
       let message = `${result.insertedCount} account valuess were inserted.`;
       console.log(message);
-      accountValueCollection
-        .createIndex({ accountId: 1, date: -1 })
-        .then((result) => {
-          // console.log(result);
-          console.log('    accountId/date index created for accountvalue');
-        });
+      accountValueCollection.createIndex({ accountId: 1, date: -1 }).then((result) => {
+        // console.log(result);
+        console.log('    accountId/date index created for accountvalue');
+      });
     });
   } catch (e) {
     console.error(e);
@@ -209,7 +259,7 @@ const importAccounts = (accounts, res) => {
   }
 };
 
-exports.importJson = function (req, res) {
+exports.importJsonOld = function (req, res) {
   let filePath = '/home/kemomimi/code/trendJava/trenddb/trend.json';
   console.log('Import JSON from: ' + filePath);
   try {
@@ -297,12 +347,10 @@ const importHQuotes = (hquotes, res) => {
     hquoteCollection.insertMany(hqs).then((result) => {
       let message = `${result.insertedCount} hquotes were inserted.`;
       console.log(message);
-      hquoteCollection
-        .createIndex({ tickerId: 1, year: 1, month: 1 })
-        .then((result) => {
-          // console.log(result);
-          console.log('    tickerId/year/month index created for hquote');
-        });
+      hquoteCollection.createIndex({ tickerId: 1, year: 1, month: 1 }).then((result) => {
+        // console.log(result);
+        console.log('    tickerId/year/month index created for hquote');
+      });
     });
   } catch (e) {
     console.error(e);
@@ -312,7 +360,7 @@ const importHQuotes = (hquotes, res) => {
   }
 };
 
-exports.importQuoteJson = function (req, res) {
+exports.importQuoteJsonOld = function (req, res) {
   let filePath = '/home/kemomimi/code/trendJava/trenddb/quote.json';
   console.log('Import quote JSON from: ' + filePath);
   try {

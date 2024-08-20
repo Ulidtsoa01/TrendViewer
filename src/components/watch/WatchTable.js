@@ -23,7 +23,7 @@ function WatchTable() {
   const dispatch = useDispatch();
   dispatch(stocklistActions.setWatch({ watchId: watchId, stockList: watchList }));
 
-  return <SortedTable title={PortfolioMap[watchId]} data={watchList} columns={columns} keyField="tickerId" preSlide={watchId} addUrl={'/rest/watch/add/' + watchId + '/'} deleteUrl={'/rest/watch/remove/' + watchId + '/'} />;
+  return <SortedTable key={watchId} title={PortfolioMap[watchId]} data={watchList} columns={columns} keyField="tickerId" preSlide={watchId} addUrl={'/rest/watch/add/' + watchId + '/'} deleteUrl={'/rest/watch/remove/' + watchId + '/'} />;
 }
 
 export default WatchTable;
