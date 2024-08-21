@@ -68,9 +68,9 @@ function HomeAction() {
     fetch(url, {
       method: 'POST',
       mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      // headers: {
+      //   'Content-Type': 'multipart/form-data',
+      // },
       body: data,
     })
       .then((response) => {

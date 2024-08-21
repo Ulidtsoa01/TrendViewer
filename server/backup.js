@@ -2,7 +2,7 @@ const fs = require('fs');
 const dbclient = require('./dbclient');
 const util = require('./util');
 
-exports.exportRecordJson = async function (req, res) {
+exports.exportRecordJson = async (req, res) => {
   const dbnames = ['ticker', 'tickerjournal', 'marketassessment', 'portfolio', 'account', 'activity', 'accountvalue'];
 
   try {
@@ -18,7 +18,7 @@ exports.exportRecordJson = async function (req, res) {
   }
 };
 
-exports.exportQuoteJson = async function (req, res) {
+exports.exportQuoteJson = async (req, res) => {
   const dbnames = ['dquote', 'hquote'];
 
   try {
@@ -34,8 +34,19 @@ exports.exportQuoteJson = async function (req, res) {
   }
 };
 
-exports.importRecordJson = (req, res) => {
-  const backup = { ...req.body };
+exports.importRecordJson = async (req, res) => {
+  // let data = [];
+  // req.on('data', (chunk) => {
+  //   data.push(chunk);
+  // });
+  // req.on('end', () => {
+  //   let backup = Buffer.concat(data).toString();
+  //   console.log(backup);
+  //   backup = JSON.parse(backup);
+  //   Buffer.concat(data);
+  // });
+
+  let backup = JSON.parse(req.file.buffer.toString());
   const dbnames = Object.keys(backup);
   try {
     for (const item of dbnames) {

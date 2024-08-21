@@ -1,12 +1,19 @@
 const express = require('express');
 const cors = require('cors');
-const dbclient = require('./dbclient');
-const backup = require('./backup');
+const multer = require('multer');
 const account = require('./account');
+const backup = require('./backup');
+const dbclient = require('./dbclient');
 const journal = require('./journal');
 const ticker = require('./ticker');
 const portfolio = require('./portfolio');
 const quote = require('./quote');
+const value = require('./value');
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  dest: './tmp',
+});
 
 const PORT = process.env.PORT || 3001;
 
@@ -24,7 +31,7 @@ app.get('/api', (req, res) => {
 app.get('/dquotes', quote.getDQuotes);
 app.get('/hquotes/:id', quote.getHQuotesByTicker);
 
-// app.post('/rest/action/updateaccountvalues', value.updateAccountValues);
+app.post('/rest/action/updateaccountvalues', value.updateAccountValues);
 
 //journal
 app.get('/rest/journal', journal.getJournal);
@@ -78,8 +85,8 @@ app.get('/rest/hquote/daily/:id', quote.getHQuotesByTicker);
 app.post('/rest/action/deletequotes/:id', ticker.deleteHQuote);
 
 //// backup ////
-app.post('/rest/importrecordjson', backup.importRecordJson);
-app.post('/rest/importquotejson', backup.importQuoteJson);
+app.post('/rest/importrecordjson', upload.single('file'), backup.importRecordJson);
+app.post('/rest/importquotejson', upload.single('file'), backup.importQuoteJson);
 app.get('/rest/exportrecordjson', backup.exportRecordJson);
 app.get('/rest/exportquotejson', backup.exportQuoteJson);
 
