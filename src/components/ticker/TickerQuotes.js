@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRevalidator, Link } from 'react-router-dom';
-import { Card, Container, Row, Col, Button, Navbar, Form } from 'react-bootstrap';
+import { Card, Container, Row, Col, Button, Navbar } from 'react-bootstrap';
 import { toDateWithSeconds } from '../misc/Utils';
 import SimpleTable from '../UI/SimpleTable';
 import styles from './Ticker.module.css';
