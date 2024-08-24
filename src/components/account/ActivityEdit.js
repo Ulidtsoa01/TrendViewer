@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { useNavigate, useRevalidator } from 'react-router-dom';
+import { useRevalidator } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Card, Container, Row, Col, Button, Form } from 'react-bootstrap';
 import Select from 'react-select';
 
 import styles from './Account.module.css';
-import { getAccountName, fillTickerOptions } from '../misc/Utils';
+import { fillTickerOptions } from '../misc/Utils';
 
 function ActivityEdit(props) {
   const { account, activity, onCancel } = props;
-  const navigate = useNavigate();
   let revalidator = useRevalidator();
   const tickers = useSelector((state) => state.tickers);
   const dispatch = useDispatch();

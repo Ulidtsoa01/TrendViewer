@@ -4,8 +4,8 @@ import styles from './Home.module.css';
 
 function HomeAction() {
   const [message, setMessage] = useState(' ');
-  const [fileUploadR, setFileUploadR] = useState('');
-  const [fileUploadQ, setFileUploadQ] = useState('');
+  // const [fileUploadR, setFileUploadR] = useState('');
+  // const [fileUploadQ, setFileUploadQ] = useState('');
   const inputRefR = useRef();
   const inputRefQ = useRef();
 

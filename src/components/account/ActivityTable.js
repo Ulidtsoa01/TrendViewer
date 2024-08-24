@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { Container, Navbar, Form, Button, ButtonGroup } from 'react-bootstrap';
+import { Container, Navbar, Form, Button } from 'react-bootstrap';
 
 import styles from './Account.module.css';
 import SimpleTable from '../UI/SimpleTable';
@@ -10,11 +9,9 @@ import ActivityEdit from './ActivityEdit';
 
 function ActivityTable(props) {
   const { activityList, account } = props;
-  const navigate = useNavigate();
   const [mode, setMode] = useState('home');
   const [clickedActivity, setClickedActivity] = useState(null);
   const [filter, setFilter] = useState('');
-  let accounts = useSelector((state) => state.accounts);
 
   // console.log('ActivityTable called with accountId=' + accountId);
   // console.log(activityList);

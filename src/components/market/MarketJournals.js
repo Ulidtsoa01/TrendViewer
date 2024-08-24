@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Card, Accordion, Tab, Tabs, Container, Row, Col, Navbar, Form, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Container, Navbar, Form, Button } from 'react-bootstrap';
 import SimpleTable from '../UI/SimpleTable';
 import MarketJournalEdit from './MarketJournalEdit';
 

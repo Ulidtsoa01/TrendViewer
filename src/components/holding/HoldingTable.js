@@ -3,9 +3,6 @@ import { useRouteLoaderData, json } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { stocklistActions } from '../../store/index';
 
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-
 import styles from './HoldingTable.module.css';
 import SortedTable from '../UI/SortedTable';
 
@@ -32,9 +29,9 @@ function HoldingTable() {
   const dispatch = useDispatch();
   dispatch(stocklistActions.setHoldings(holdingList));
 
-  const [notice, setNotice] = useState('');
-  const [updateNumber, setUpdateNumber] = useState(1);
-  const [holdings, setHoldings] = useState(holdingList);
+  const [notice] = useState('');
+  const [updateNumber] = useState(1);
+  const [holdings] = useState(holdingList);
 
   const totalCash = Math.round(cashHolding.value * 100) / 100;
   const totalValue = Math.round((cashHolding.value * 10000) / cashHolding.valuePercent) / 100;

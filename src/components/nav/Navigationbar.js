@@ -10,33 +10,33 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { PortfolioMap } from '../../Constant';
 
 function Navigationbar() {
-  const dispatch = useDispatch();
-  let accounts = useSelector((state) => state.accounts);
+  // const dispatch = useDispatch();
+  // let accounts = useSelector((state) => state.accounts);
 
   // console.log('Navigationbar called.');
   // console.log(accounts);
 
-  const loadAccounts = async () => {
-    const response = await fetch('/rest/account/only');
-    // console.log('loadAccounts called...');
+  // const loadAccounts = async () => {
+  //   const response = await fetch('/rest/account/only');
+  //   // console.log('loadAccounts called...');
 
-    if (!response.ok) {
-      // return { isError: true, message: 'Could not fetch events.' };
-      // throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {
-      //   status: 500,
-      // });
-      throw json(
-        { message: 'Could not fetch hot items.' },
-        {
-          status: 500,
-        }
-      );
-    } else {
-      const resData = await response.json();
-      dispatch(stocklistActions.setAccounts(resData));
-      //accounts = resData;
-    }
-  };
+  //   if (!response.ok) {
+  //     // return { isError: true, message: 'Could not fetch events.' };
+  //     // throw new Response(JSON.stringify({ message: 'Could not fetch events.' }), {
+  //     //   status: 500,
+  //     // });
+  //     throw json(
+  //       { message: 'Could not fetch hot items.' },
+  //       {
+  //         status: 500,
+  //       }
+  //     );
+  //   } else {
+  //     const resData = await response.json();
+  //     dispatch(stocklistActions.setAccounts(resData));
+  //     //accounts = resData;
+  //   }
+  // };
 
   // useEffect(() => {
   //   if (!accounts) {
