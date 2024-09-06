@@ -2,6 +2,24 @@ const fs = require('fs');
 const dbclient = require('./dbclient');
 const util = require('./util');
 
+exports.clearData = async (req, res) => {
+  const recorddbnames = ['ticker', 'tickerjournal', 'marketassessment', 'portfolio', 'account', 'activity', 'accountvalue'];
+  const quotedbnames = ['dquote', 'hquote'];
+
+  try {
+    for (const item of recorddbnames) {
+      dbclient.recorddb().collection(item).deleteMany({});
+    }
+    for (const item of quotedbnames) {
+      dbclient.quotedb().collection(item).deleteMany({});
+    }
+    res.send({ message: 'Finished clearing data' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
 exports.exportRecordJson = async (req, res) => {
   const dbnames = ['ticker', 'tickerjournal', 'marketassessment', 'portfolio', 'account', 'activity', 'accountvalue'];
 
@@ -35,17 +53,6 @@ exports.exportQuoteJson = async (req, res) => {
 };
 
 exports.importRecordJson = async (req, res) => {
-  // let data = [];
-  // req.on('data', (chunk) => {
-  //   data.push(chunk);
-  // });
-  // req.on('end', () => {
-  //   let backup = Buffer.concat(data).toString();
-  //   console.log(backup);
-  //   backup = JSON.parse(backup);
-  //   Buffer.concat(data);
-  // });
-
   let backup = JSON.parse(req.file.buffer.toString());
   const dbnames = Object.keys(backup);
   try {
@@ -271,7 +278,7 @@ const importAccounts = (accounts, res) => {
 };
 
 exports.importJsonOld = function (req, res) {
-  let filePath = '/home/kemomimi/code/trendJava/trenddb/trend.json';
+  let filePath = '';
   console.log('Import JSON from: ' + filePath);
   try {
     fs.readFile(filePath, 'utf8', function (err, data) {
@@ -372,7 +379,7 @@ const importHQuotes = (hquotes, res) => {
 };
 
 exports.importQuoteJsonOld = function (req, res) {
-  let filePath = '/home/kemomimi/code/trendJava/trenddb/quote.json';
+  let filePath = '';
   console.log('Import quote JSON from: ' + filePath);
   try {
     fs.readFile(filePath, 'utf8', function (err, data) {

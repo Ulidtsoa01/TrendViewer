@@ -22,7 +22,7 @@ function HotTable() {
 
   //console.log("HotTable called");
 
-  return <SortedTable title="Hot" data={hotList} columns={columns} keyField="tickerId" addUrl="/rest/hot/add/" deleteUrl="/rest/hot/remove/" />;
+  return <SortedTable title="Hot" data={hotList} columns={columns} keyField="tickerId" addUrl="/rest/watch/add/hot/" deleteUrl="/rest/watch/remove/hot/" />;
 }
 
 export default HotTable;

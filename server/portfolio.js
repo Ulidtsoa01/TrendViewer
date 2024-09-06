@@ -130,6 +130,76 @@ exports.getHoldings = (req, res) => {
     res.status(500).send({ message: e });
   }
 };
+
+const calculateGain = (activities, dquote, t) => {
+  let cost = 0.0,
+    sale = 0.0,
+    shares = 0.0,
+    value = 0.0;
+  activities.forEach((act) => {
+    switch (act.type) {
+      case 'Dividend':
+      case 'Gain':
+        sale += act.amount;
+        break;
+      case 'Buy':
+        cost += act.amount;
+        shares += act.shares;
+        break;
+      case 'Sell':
+        sale += act.amount;
+        shares -= act.shares;
+        break;
+      case 'Split':
+        shares *= act.amount / act.shares;
+        break;
+      default:
+        break;
+    }
+  });
+
+  if (shares > 0) {
+    if (dquote == null) {
+      console.log(`Missing daily quote for ticker: ${t.name}`);
+      return 0;
+    }
+    value = shares * dquote.last;
+  }
+  return sale + value - cost;
+};
+
+const allSold = (act) => {
+  switch (act.type) {
+    case 'Buy':
+    case 'Sell':
+    case 'Split':
+      if (act.accumulatedShares < 0.00001) {
+        return true;
+      }
+      break;
+    default:
+      break;
+  }
+  return false;
+};
+
+const findCurrentActivities = (activityList) => {
+  let lastAllSoldIndex = -1;
+  for (let i = activityList.length - 1; i >= 0; i--) {
+    if (allSold(activityList[i])) {
+      lastAllSoldIndex = i;
+      break;
+    }
+  }
+  if (lastAllSoldIndex == -1) {
+    return null;
+  }
+  if (lastAllSoldIndex == activityList.length - 1) {
+    return [];
+  }
+  return activityList.slice(lastAllSoldIndex + 1);
+};
+
 const buildChartData = (activities, dquote, hquotes, t, res) => {
   account.calcAccumulatedShares(activities);
   activities.forEach((obj) => (obj.accountName = util.getAccounts(obj.accountId).name));
@@ -138,6 +208,18 @@ const buildChartData = (activities, dquote, hquotes, t, res) => {
   if (t.settings.comment) chartData.comment = t.settings.comment;
   if (t.settings.buyLimit) chartData.buyLimit = t.settings.buyLimit;
   if (t.settings.sellStop) chartData.sellStop = t.settings.sellStop;
+  chartData.lifetimeGain = calculateGain(activities, dquote, t);
+
+  let currentActivityList = findCurrentActivities(activities);
+  if (currentActivityList == null) {
+    // the whole list
+    chartData.currentGain = chartData.lifetimeGain;
+  } else if (currentActivityList.length === 0) {
+    chartData.currentGain = 0;
+  } else {
+    let currentGain = calculateGain(currentActivityList, dquote, t);
+    chartData.currentGain = currentGain;
+  }
 
   res.send(chartData);
 };
@@ -348,7 +430,7 @@ const updatePortfolioTickers = (pId, tickerArray, res) => {
 };
 
 exports.addWatchItem = (req, res) => {
-  const portfolioName = util.PortfolioMap[req.params.watchId];
+  const portfolioName = req.params.watchId === 'hot' ? 'Hot' : util.PortfolioMap[req.params.watchId];
   const tickerName = req.params.tickerName;
 
   try {
@@ -373,7 +455,7 @@ exports.addWatchItem = (req, res) => {
 };
 
 exports.removeWatchItem = (req, res) => {
-  const portfolioName = util.PortfolioMap[req.params.watchId];
+  const portfolioName = req.params.watchId === 'hot' ? 'Hot' : util.PortfolioMap[req.params.watchId];
 
   try {
     dbclient

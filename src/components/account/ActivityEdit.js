@@ -50,8 +50,8 @@ function ActivityEdit(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        _id: activity ? activity.id : 0,
-        accountId: account.id,
+        _id: activity ? activity._id : 0,
+        accountId: account._id,
         tickerName: ticker,
         date: date,
         shares: Number(shares),
@@ -75,7 +75,7 @@ function ActivityEdit(props) {
   };
 
   const handleDelete = () => {
-    let url = '/rest/activity/' + activity.id;
+    let url = '/rest/activity/' + activity._id;
     fetch(url, {
       method: 'DELETE',
       mode: 'cors',

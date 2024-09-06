@@ -89,6 +89,7 @@ app.post('/rest/importrecordjson', upload.single('file'), backup.importRecordJso
 app.post('/rest/importquotejson', upload.single('file'), backup.importQuoteJson);
 app.get('/rest/exportrecordjson', backup.exportRecordJson);
 app.get('/rest/exportquotejson', backup.exportQuoteJson);
+app.delete('/rest/cleardata', backup.clearData);
 
 app.get('/rest/old/importjson', backup.importJsonOld);
 app.get('/rest/old/importquotejson', backup.importQuoteJsonOld);

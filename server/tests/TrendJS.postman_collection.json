@@ -1,0 +1,955 @@
+{
+	"info": {
+		"_postman_id": "0b0b6650-f474-4c52-8884-e0d2a96482b2",
+		"name": "TrendJS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37123499"
+	},
+	"item": [
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "getDQuotes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/dquotes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"dquotes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getHQuotesByTicker",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/hquotes/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"hquotes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateAccountValues",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/action/updateaccountvalues",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"action",
+								"updateaccountvalues"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Journal",
+			"item": [
+				{
+					"name": "getJournal",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/journal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"journal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createJournal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_id\": null,\r\n    \"name\": \"test\",\r\n    \"date\": \"2024-07-20\",\r\n    \"url\": \"\",\r\n    \"urlTitle\": \"\",\r\n    \"value\": \"adafsadffad\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/journal/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"journal",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateJournal",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_id\": 1167,\r\n    \"name\": \"test\",\r\n    \"date\": \"2024-07-20\",\r\n    \"url\": \"aa\",\r\n    \"urlTitle\": \"aa\",\r\n    \"value\": \"dd\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/journal/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"journal",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteJournal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/journal/1167",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"journal",
+								"1167"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Portfolio",
+			"item": [
+				{
+					"name": "getHoldings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/holding",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"holding"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getChartData",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/stocklist/chartdata/BIDU/daily",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"stocklist",
+								"chartdata",
+								"BIDU",
+								"daily"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getHotItems",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/hot",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"hot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getWatchItems",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/watch/items/core",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"watch",
+								"items",
+								"core"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addWatchItem",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/watch/add/core/AC",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"watch",
+								"add",
+								"core",
+								"AC"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removeWatchItem",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/watch/remove/core/AC",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"watch",
+								"remove",
+								"core",
+								"AC"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account - All",
+			"item": [
+				{
+					"name": "getAccounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/account",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTradeActivities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/account/tradeactivities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"account",
+								"tradeactivities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStockReport",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/stockreport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"stockreport"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllAnnualReports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/accountreport/annual/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"accountreport",
+								"annual",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllMonthlyReports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/accountreport/monthly/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"accountreport",
+								"monthly",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account - Individual",
+			"item": [
+				{
+					"name": "getAnnualReport",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/accountreport/annual/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"accountreport",
+								"annual",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMonthlyReport",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/accountreport/monthly/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"accountreport",
+								"monthly",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postActivity - create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"accountId\": 2,\r\n    \"type\": \"Interest\",\r\n    \"date\": \"2024-07-25\",\r\n    \"tickerName\": \"AA\",\r\n    \"price\": 0,\r\n    \"shares\": 0,\r\n    \"tradeCost\": 0,\r\n    \"amount\": 3000,\r\n    \"comment\": \"test\",\r\n    \"_id\": 0\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/activity",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"activity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postActivity - edit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"accountId\": 2,\r\n    \"type\": \"Interest\",\r\n    \"date\": \"2024-07-25\",\r\n    \"price\": 0,\r\n    \"shares\": 0,\r\n    \"tradeCost\": 0,\r\n    \"amount\": 4000,\r\n    \"comment\": \"test 1\",\r\n    \"_id\": 2119 \r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/activity",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"activity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getValueHistory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/accountvalue/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"accountvalue",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ticker - Info",
+			"item": [
+				{
+					"name": "getTickerNameList",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/tinfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"tinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTickerInfo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/tinfo/:ticker",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"tinfo",
+								":ticker"
+							],
+							"variable": [
+								{
+									"key": "ticker",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateTickerInfo",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tickerId\": 1,\r\n    \"tickerName\": \"AA\",\r\n    \"type\": \"asdf\",\r\n    \"sector\": \"Industrial Materials\",\r\n    \"industry\": \"Aluminum\",\r\n    \"tickerDescription\": \"ALCOA INC    \",\r\n    \"exchangeCode\": \"NasdaqGS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/tinfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"tinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modifySettings",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tickerId\": 1,\r\n    \"sellLimit\": \"100\",\r\n    \"sellStop\": null,\r\n    \"buyLimit\": null,\r\n    \"buyStop\": 1,\r\n    \"tickerClass\": \"TREND\",\r\n    \"bcIndustry\": \"Industry\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/tinfo/1/settings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"tinfo",
+								"1",
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteTickerInfo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/tinfo/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"tinfo",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ticker - Other",
+			"item": [
+				{
+					"name": "createTickerJournal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": null,\r\n    \"tickerId\": 1,\r\n    \"name\": \"test\",\r\n    \"date\": \"2024-07-20\",\r\n    \"url\": \"\",\r\n    \"urlTitle\": \"\",\r\n    \"value\": \"TEST\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/journal/normal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"journal",
+								"normal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateTickerJournal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1165,\r\n    \"tickerId\": 1,\r\n    \"name\": \"test\",\r\n    \"date\": \"2024-07-20\",\r\n    \"url\": \"\",\r\n    \"urlTitle\": \"\",\r\n    \"value\": \"TEST 1\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/journal/normal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"journal",
+								"normal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteTickerJournal",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/journal/normal/1165",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"journal",
+								"normal",
+								"1165"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteHQuote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/action/deletequotes/AA",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"action",
+								"deletequotes",
+								"AA"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getHQuote",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/hquote/daily/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"hquote",
+								"daily",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Backup",
+			"item": [
+				{
+					"name": "importJsonOld",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/old/importjson",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"old",
+								"importjson"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "importRecordJson",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"ticker\": [\r\n  {\r\n   \"_id\": 9997,\r\n   \"name\": \"AATT\",\r\n   \"description\": \"ALCOA INC    \",\r\n   \"industry\": \"Aluminum\",\r\n   \"type\": \"stock\",\r\n   \"sector\": \"Industrial Materials\",\r\n   \"exchangeCode\": \"EX$$$$XNYS\",\r\n   \"settings\": {\r\n    \"bcIndustry\": \"dddd\",\r\n    \"toRemove\": \"true\",\r\n    \"bcSid\": \"127357\",\r\n    \"sellLimit\": 100,\r\n    \"sellStop\": 50,\r\n    \"buyLimit\": null,\r\n    \"buyStop\": 1,\r\n    \"tickerClass\": \"SHADOW\",\r\n    \"comment\": \"Hold now for dividends.\\n\\nHigh field oil stock. Part of DOW.\",\r\n    \"category\": \"Oil\"\r\n   }\r\n}]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/importrecordjson",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"importrecordjson"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "importQuoteJson",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"hquotes\": [\r\n    {\r\n      \"_id\": \"ObjectId('669c85db0745c5d6c70cdcd6')\",\r\n      \"tickerId\": 4179,\r\n      \"year\": 2024,\r\n      \"month\": 7,\r\n      \"quotes\": [\r\n        {\r\n          \"date\": 1720656000000,\r\n          \"volume\": 5246402,\r\n          \"high\": 143.48,\r\n          \"low\": 141.67,\r\n          \"change\": 0,\r\n          \"adjclose\": 0,\r\n          \"close\": 142.76,\r\n          \"open\": 142.36\r\n        },\r\n        {\r\n          \"date\": 1720569600000,\r\n          \"volume\": 6350258,\r\n          \"high\": 142.38,\r\n          \"low\": 139.73,\r\n          \"change\": 0,\r\n          \"adjclose\": 0,\r\n          \"close\": 142.07,\r\n          \"open\": 141.12\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/rest/importquotejson",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"importquotejson"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exportRecordJson",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/exportrecordjson",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"exportrecordjson"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "exportQuoteJson",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/rest/exportquotejson",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"rest",
+								"exportquotejson"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

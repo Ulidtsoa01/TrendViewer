@@ -51,8 +51,8 @@ function MarketJournals(props) {
       ),
     },
     { title: 'Title', field: 'name', type: 'string' },
-    { title: 'URL', field: 'urlTitle', type: 'string', formatter: (r, v) => <a href="{r.url}">{v}</a> },
     { title: 'Content', field: 'value', type: 'string', formatter: (r, v) => (v.length > 100 ? v.substring(0, 100) + ' ...' : v) },
+    { title: 'URL', field: 'urlTitle', type: 'string', formatter: (r, v) => <a href="{r.url}">{v}</a> },
   ];
 
   return (
@@ -61,12 +61,12 @@ function MarketJournals(props) {
         <Navbar expand="lg" className="bg-body-tertiary">
           <Container fluid>
             <Navbar.Brand as={Link} to="#">
-              Market Assessment
+              Market Journal
             </Navbar.Brand>
             <Navbar.Collapse id="navbarMarketGeneral">
               <Form className="d-flex">
                 <Button variant="primary" onClick={handleAdd}>
-                  Add Assessment
+                  Add Entry
                 </Button>
               </Form>
             </Navbar.Collapse>

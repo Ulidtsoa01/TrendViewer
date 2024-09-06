@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 // import { stocklistActions } from '../../store/index';
 // import { json } from 'react-router-dom';
@@ -84,7 +83,7 @@ function Navigationbar() {
               </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link as={Link} to="/market">
-              Market
+              Market Journal
             </Nav.Link>
             <Nav.Link as={Link} to="/ticker">
               Ticker
