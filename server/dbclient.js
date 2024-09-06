@@ -1,5 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const util = require('./util');
+require('dotenv').config();
 
 // Replace the placeholder with your Atlas connection string
 // const uri = 'mongodb://127.0.0.1:27017';
