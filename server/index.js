@@ -9,14 +9,14 @@ const ticker = require('./ticker');
 const portfolio = require('./portfolio');
 const quote = require('./quote');
 const value = require('./value');
-const path = require('path');
 
 const upload = multer({
   storage: multer.memoryStorage(),
   dest: './tmp',
 });
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 3001;
+// const PORT = process.env.PORT || 80;
 
 const app = express();
 
@@ -90,15 +90,16 @@ app.post('/rest/importrecordjson', upload.single('file'), backup.importRecordJso
 app.post('/rest/importquotejson', upload.single('file'), backup.importQuoteJson);
 app.get('/rest/exportrecordjson', backup.exportRecordJson);
 app.get('/rest/exportquotejson', backup.exportQuoteJson);
-app.delete('/rest/cleardata', backup.clearData);
+app.delete('/rest/clearrecorddata', backup.clearRecordData);
+app.delete('/rest/clearquotedata', backup.clearQuoteData);
 
 app.get('/rest/old/importjson', backup.importJsonOld);
 app.get('/rest/old/importquotejson', backup.importQuoteJsonOld);
 
-app.use(express.static(path.join(__dirname, 'build')));
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+// app.use(express.static(path.join(__dirname, 'build')));
+// app.get('/*', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

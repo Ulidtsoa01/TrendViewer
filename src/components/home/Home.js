@@ -4,142 +4,98 @@ import HomeAction from './HomeAction';
 import styles from './Home.module.css';
 
 function HomePage() {
-
   return (
     <>
       <HomeAction />
       <Accordion defaultActiveKey="1" className={styles.accordion}>
         <Accordion.Item eventKey="0">
-          <Accordion.Header><b>Daily</b></Accordion.Header>
+          <Accordion.Header>
+            <b>Terms explanation</b>
+          </Accordion.Header>
           <Accordion.Body>
-            <ol>
-              <li>Go into <Link to="/holdings">Holdings</Link>, hit "Update". Check if any Sell Stop broken.</li>
-              <li>Check <Link to="/hot">Hot List</Link>, hit "Update". Check if any Buy Limit reached.</li>
-              <li>Read <Link to="/account">Account</Link>.</li>
-              <li><a target="_blank" href="http://stockcharts.com/freecharts/marketsummary.html">Intraday Market Summary from StockCharts.com</a></li>
-              <li>Head to <a href="https://seekingalpha.com/" target="_blank">Seeking Alpha</a> for Home page, Holding, Core and Hot portfolios.</li>
-              <li>Write <Link to="/journal">Journal</Link> if any.</li>
-            </ol>
+            <ul>
+              <li>Trade cost: the cost of each trade</li>
+              <li>Original Cash: sum of all cash deposited minus the cash withdrawn</li>
+              <li>Cash/Current Cash: total amount of cash in the account, available for immediate withdrawal or use</li>
+              <li>Value: total worth of all stock holdings and current cash for an account</li>
+              <li>Gain: money gained, equals the current value minus the original cash</li>
+              <li>Gain Percent: equals the gain divided by the original cash</li>
+              <li>SPY Percent: how much gain is invested in SPY, which is the ETF tracking S&amp;P 500 index</li>
+              <li>Buy Climax: occurs when an up-trend ends on extremely high volume and narrow price spread &lt;&gt;(what number mean)</li>
+              <li>Sell Climax: occurs when a down-trend ends on extremely high volume and narrow price spread</li>
+              <li>Buy and Sell Limit: A limit order to buy or sell a security must be executed at a specific price or better. A buy limit order can only be executed lower or equal to the buy limit, and a sell limit order can only be executed above or equal to the sell limit.</li>
+              <li>Buy and Sell Stop: A stop order to buy or sell a security is executed to protect profit or limit loss. A buy stop order is executed upon the market price rising to a certain level. A sell stop order is executed upon the market price falling to a certain level.</li>
+            </ul>
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="1">
-          <Accordion.Header><b>Weekly</b></Accordion.Header>
+          <Accordion.Header>
+            <b>Account Overview</b>
+          </Accordion.Header>
           <Accordion.Body>
-            <ol>
-              <li>Hit Download All button up top.</li>
-              <li>Study <Link to="/account">Account</Link> including Monthly and Annual reports.</li>
-              <li>Review most recent McClellan report.</li>
-              <li>Do <Link to="/market">market analysis</Link>.</li>
-              <li>Study <Link to="/holdings">Holdings</Link> in both Trend and <a href="https://seekingalpha.com/account/portfolio/summary?portfolioId=61730272" target="_blank">Seeking Alpha</a>.</li>
-              <li>Check <Link to="/hot">Hot List</Link> in both Trend and <a href="https://seekingalpha.com/account/portfolio/summary?portfolioId=61686749" target="_blank">Seeking Alpha</a>.</li>
-              <li>Check <a href="https://seekingalpha.com/screeners/96793299-Top-Rated-Stocks?source=top_stocks%3Aexpanded%3Anavbar_left" target="_blank">Top Stocks</a> from Seeking Alpha.</li>
-              <li>Go through all sections in <b>Watch</b> for climax signals. </li>
-              <ul>
-                <li>When time permit, do my my slide.</li>
-                <li>With good climax signal and right market direction, add it to hot and study it in <a href="https://seekingalpha.com/" target="_blank">Seeking Alpha</a>.</li>
-                <li>If bought, set sell stop and be alert.</li>
-              </ul>
-              <li>Write <Link to="/journal">Journal</Link> if any.</li>
-            </ol>
+            <p>Accounts represent the financial accounts of an user. Activities represent the actions taken within an account, such as depositing cash or buying a stock. Activities must be associated with one account id, and they may be associated with one or zero ticker ids depending on the activity type. There are several activity types:</p>
+            <ul>
+              <li>Deposit: cash deposit</li>
+              <li>Withdraw: cash withdraw</li>
+              <li>Interest: interest</li>
+              <li>Buy: buying a stock</li>
+              <li>Sell: selling a stock</li>
+              <li>Expense: various expense for holding stock</li>
+              <li>Gain: money gained, equals the current value minus the original cash</li>
+              <li>Dividend: dividend yield of stock</li>
+              <li>Split: when a company divides its stock into multiple shares</li>
+            </ul>
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="2">
-          <Accordion.Header><b>Monthly on first Saturday of the month</b></Accordion.Header>
+          <Accordion.Header>
+            <b>Account Reports</b>
+          </Accordion.Header>
           <Accordion.Body>
-            <ol>
-              <li>Hit Download All button up top.</li>
-              <li>Review spending with Yan in <a href="https://app.simplifimoney.com/" target="_blank">Quicken Simplifi</a>.</li>
-              <li>Update Trend from Fidelity with interests and dividends (or any remaining trades).</li>
-              <li>Hit Update Account Values button up top.</li>
-              <li>Study Monthly and Annual reports in <Link to="/account">Account</Link></li>
-            </ol>
+            <p>The account reports shows the metrics and activities of the accounts. These metrics are calculated on the server-side, where calls to the MongoDB database are made and the response is returned to the client. These pages are divided into two categories: reports using data from all of the accounts and reports only using data from an individual account.</p>
+            <p style={{ textDecoration: 'underline' }}>All</p>
+            <ul>
+              <li>Summary: Shows a summary of the individual accounts and the links to navigate to them. The summary values of an account are calculated from its activities.</li>
+              <li>Trade Activities: Only shows activities of the &quot;Sell&quot; and &quot;Buy&quot; type.</li>
+              <li>Monthly Report and Annual Report: Calculates metrics for all of the accounts&#39; values across either different months and different years.</li>
+              <li>Report by Stock: Shows an aggregate of all the stocks handled in the activities of all the accounts.</li>
+            </ul>
+            <p style={{ textDecoration: 'underline' }}>Individual</p>
+            <ul>
+              <li>Summary: Shows a summary of the account and a list of its holdings.</li>
+              <li>Activities: Shows the history of an account&#39;s activities and allows the creation of new activities.</li>
+              <li>Monthly Report and Annual Report: Calculates metrics for an account&#39;s values across either different months and different years.</li>
+              <li>Value History: Shows the account value at the end of each month. The comment field shows the holdings and the amount of shares.</li>
+            </ul>
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="3">
-          <Accordion.Header><b>Strategy</b></Accordion.Header>
+          <Accordion.Header>
+            <b>Ticker</b>
+          </Accordion.Header>
           <Accordion.Body>
+            <p>Upon navigating to a ticker, several pages can be accessed:</p>
             <ul>
-              <li>Index
-                <ol>
-                  <li>Put a big portion (30%?) of my asset into ETF: SPY, IXUS, VTI</li>
-                  <li>Reduce when market is high and increase when it is low</li>
-                  <li>Study their reports and try to pick better ones</li>
-                </ol>
-              </li>
-              <li>Fundamental
-                <ol>
-                  <li>Use the Core portfolia for stocks I hold long term</li>
-                  <li>Keep up with their financials and earning reports</li>
-                  <li>Reduce when going up and increase when it goes down</li>
-                  <li>The high limit should be 60k and the low limit should be 10k</li>
-                </ol>
-              </li>
-              <li>Market Timing
-                <ol>
-                  <li>Use McClellan Report for direction, to decide whether it is bull, bear or side way.</li>
-                  <li>Use Seeking Alpha to monitor portfolios and research individual stocks.</li>
-                  <li>Use Trend for my trading record and climax signals.</li>
-                </ol>
-              </li>
-              <li>In general
-                <ul>
-                  <li>In Bull Market
-                    <ol>
-                      <li>Try to get 90% invested. Use SPY if picking stocks are difficult.</li>
-                      <li>Use bottom climax signal.</li>
-                    </ol>
-                  </li>
-                  <li>In Bear or Side way Market
-                    <ol>
-                      <li>Hold 50% in index fund. Avoid holding individual stocks except utilities.</li>
-                      <li>Focus on solid stocks that are unfairly beaten down too low.</li>
-                    </ol>
-                  </li>
-                  <li>Climax Signal in bull market or rally time
-                    <ol>
-                      <li>CLX indicator by Joe Granville measures the difference between SMAx and SMA200. When SMA2-SMA200 reaches a bottom, it's CLX2 buy signal. When it reaches a top, it's sell signal.</li>
-                      <li>Read climax signal for all stock under watch twice a week, ideally weekend and Wednesday.</li>
-                      <li>Buy after climax 2 and 5 are out, and it breaks out the base.</li>
-                      <li>When small bottom climax is out, it means that the down trend has slowed down, and it might be forming a base.
-                        For a fundamentally sound stock being beaten down, it is time to watch closely, hoping it will break out the base soon.
-                        Once it breaks out the base, it can often start a long up trend.</li>
-                      <li>When a top climax is out, it means that the up trend is slowing down. Time to watch close and tighten the sell stop.</li>
-                    </ol>
-                  </li>
-                  <li>Define Core Stocks
-                    <ol>
-                      <li>Company that is doing well and with potential.</li>
-                      <li>No scandals (like CMG).</li>
-                      <li>Business that I understand well and keeps up with earning report.</li>
-                      <li>High ratings per Seeking Alpha.</li>
-                    </ol>
-                  </li>
-                </ul>
-              </li>
+              <li>Summary: Holds information on a ticker which can be changed by the user. The settings section represents values that are applicable to some but not all tickers.</li>
+              <li>Activities: Shows all activities dealing with the ticker from any account.</li>
+              <li>Journals: Allows users to take notes for the ticker.</li>
+              <li>Quotes: Shows the daily quote and historical quote data for the ticker.</li>
             </ul>
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="4">
-          <Accordion.Header><b>Goal</b></Accordion.Header>
+          <Accordion.Header>
+            <b>Overview of Ticker Slides, Holdings, Portfolio, and Market Journal</b>
+          </Accordion.Header>
           <Accordion.Body>
-            <ol>
-              <li>Beat SPY</li>
-              <li>Don't lose money. That means cutting losses fast and not holding hopeless stocks for too long.</li>
-            </ol>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="5">
-          <Accordion.Header><b>Lessons</b></Accordion.Header>
-          <Accordion.Body>
-            <ol>
-              <li>Sold 360k stocks in November 2021 before the top as predicted by Tom McClellan, which is good.
-                But I should have set sell stops for all remaining holdings, and get rid of stocks as they went down in 2022.
-                And I should not have bought in blindly following Motley Fool suggestions.
-              </li>
-              <li>Early 2016, when precious metal stocks turn up, did not catch on soon enough.</li>
-              <li>2015-10, after 200 Day SMA crossed down under 50 Day SMA for most indexes, did not tighten up sell stop and be cautious when buying.</li>
-              <li>Starting 2012, held precious metal stocks way too long after they started going down.</li>
-            </ol>
+            <p style={{ textDecoration: 'underline' }}>Ticker Slides</p>
+            <p>The slide page for a ticker can be accessed via links on the holdings and portfolio pages. The left side shows the ticker info, quote data, related links, and activities for the specified ticker. The right side has a chart visualizing the quote history of the ticker.</p>
+            <p style={{ textDecoration: 'underline' }}>Holdings</p>
+            <p>The holdings page shows a list of holdings from all of the accounts, their associated ticker info, and related metrics. The ticker names link to the associated ticker slide.</p>
+            <p style={{ textDecoration: 'underline' }}>Portfolio</p>
+            <p>Each portfolio page is a collection of tickers, which users can add to or remove from. These collections serve as bookmarks, allowing the user to categorize tickers and easily go back to them later.</p>
+            <p style={{ textDecoration: 'underline' }}>Market Journal</p>
+            <p>The market journal allows users to take notes and record article links.</p>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>

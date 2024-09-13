@@ -13,7 +13,7 @@ const buildHoldings = (accounts, activities, dquotes) => {
         update.gain += holding.gain;
         update.number += holding.number;
         update.value += holding.value;
-        update.gainPercent = update.gain / update.cost;
+        update.gainPercent = (update.gain * 100) / update.cost;
         update.enterPrice = update.cost / update.number;
       } else {
         holdings.set(holding.tickerName, holding);
@@ -205,9 +205,11 @@ const buildChartData = (activities, dquote, hquotes, t, res) => {
   activities.forEach((obj) => (obj.accountName = util.getAccounts(obj.accountId).name));
 
   const chartData = { tickerId: t._id, tickerName: t.name, activities: activities, dquote: dquote, quotes: hquotes };
-  if (t.settings.comment) chartData.comment = t.settings.comment;
-  if (t.settings.buyLimit) chartData.buyLimit = t.settings.buyLimit;
-  if (t.settings.sellStop) chartData.sellStop = t.settings.sellStop;
+  if (t.setting) {
+    if (t.settings.comment) chartData.comment = t.settings.comment;
+    if (t.settings.buyLimit) chartData.buyLimit = t.settings.buyLimit;
+    if (t.settings.sellStop) chartData.sellStop = t.settings.sellStop;
+  }
   chartData.lifetimeGain = calculateGain(activities, dquote, t);
 
   let currentActivityList = findCurrentActivities(activities);

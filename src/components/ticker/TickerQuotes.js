@@ -12,7 +12,7 @@ const columns = [
   { title: 'Open', field: 'open', type: 'number' },
   { title: 'Close', field: 'close', type: 'number' },
   { title: 'Adj. Close', field: 'adjclose', type: 'number' },
-  { title: 'Volume', field: 'volume', type: 'number', formatter: (r, v) => v.toLocaleString() },
+  { title: 'Volume', field: 'volume', type: 'number', formatter: (r, v) => (v ? v.toLocaleString() : '') },
 ];
 
 function TickerQuotes(props) {
@@ -113,7 +113,7 @@ function TickerQuotes(props) {
                 <Col lg="3">
                   <dl>
                     <dt>Ticker Name</dt>
-                    <dd>{dQuote.tickerName}</dd>
+                    <dd>{tickerInfo.name}</dd>
                   </dl>
                 </Col>
                 <Col lg="3">
@@ -124,34 +124,8 @@ function TickerQuotes(props) {
                 </Col>
                 <Col lg="3">
                   <dl>
-                    <dt>Open Price</dt>
-                    <dd>{dQuote.open}</dd>
-                  </dl>
-                </Col>
-                <Col lg="3">
-                  <dl>
                     <dt>Last Price</dt>
                     <dd>{dQuote.last}</dd>
-                  </dl>
-                </Col>
-              </Row>
-              <Row>
-                <Col lg="3">
-                  <dl>
-                    <dt>High Price</dt>
-                    <dd>{dQuote.high}</dd>
-                  </dl>
-                </Col>
-                <Col lg="3">
-                  <dl>
-                    <dt>Low Price</dt>
-                    <dd>{dQuote.low}</dd>
-                  </dl>
-                </Col>
-                <Col lg="3">
-                  <dl>
-                    <dt>Volume</dt>
-                    <dd>{dQuote.volume ? dQuote.volume.toLocaleString() : ''}</dd>
                   </dl>
                 </Col>
               </Row>

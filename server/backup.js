@@ -2,14 +2,24 @@ const fs = require('fs');
 const dbclient = require('./dbclient');
 const util = require('./util');
 
-exports.clearData = async (req, res) => {
+exports.clearRecordData = async (req, res) => {
   const recorddbnames = ['ticker', 'tickerjournal', 'marketassessment', 'portfolio', 'account', 'activity', 'accountvalue'];
-  const quotedbnames = ['dquote', 'hquote'];
 
   try {
     for (const item of recorddbnames) {
       dbclient.recorddb().collection(item).deleteMany({});
     }
+    res.send({ message: 'Finished clearing data' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ message: e });
+  }
+};
+
+exports.clearQuoteData = async (req, res) => {
+  const quotedbnames = ['dquote', 'hquote'];
+
+  try {
     for (const item of quotedbnames) {
       dbclient.quotedb().collection(item).deleteMany({});
     }

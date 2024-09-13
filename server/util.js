@@ -16,6 +16,16 @@ exports.updateTickers = (tickers) => {
 
 exports.getTickerNames = () => tickerByName;
 
+exports.addTicker = (obj) => {
+  tickerById.set(obj._id, obj);
+  tickerByName.set(obj.name, obj);
+};
+exports.getMaxTickerId = () => {
+  let tickerIdArray = Array.from(tickerById.keys());
+  let result = tickerIdArray.reduce((maxId, currentValue) => Math.max(maxId, currentValue), 0);
+  return result;
+};
+
 exports.updateAccounts = () => {
   try {
     dbclient
@@ -84,6 +94,7 @@ exports.PortfolioMap = {
   watch: 'Under Watch',
   rb: 'Rule Breaker',
   hy: 'High Yield',
+  industry: 'Industry ETF',
 };
 
 function parseNasdaqMonth(s) {

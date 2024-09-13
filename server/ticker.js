@@ -88,6 +88,7 @@ exports.getTickerInfo = (req, res) => {
       .sort({ date: -1 })
       .toArray()
       .then((acts) => {
+        acts.forEach((obj) => (obj.accountName = util.getAccounts(obj.accountId).name));
         activityList = acts;
         activityListLoaded = true;
         returnFunc();
@@ -100,12 +101,18 @@ exports.getTickerInfo = (req, res) => {
 
 exports.createTickerInfo = (req, res) => {
   let targetObj = { ...req.body };
+  if (!targetObj._id) {
+    targetObj._id = util.getMaxTickerId() + 1;
+  }
   try {
     dbclient
       .recorddb()
       .collection('ticker')
       .insertOne(targetObj)
-      .then(res.send({ message: 'Create ticker successful' }));
+      .then((obj) => {
+        util.addTicker(targetObj);
+        res.send({ message: 'Create ticker successful' });
+      });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: e });

@@ -29,8 +29,8 @@ const MyChartLeft = ({ data, stockList, index, toPrevious, toNext }) => {
     dquoteDateString = dquoteDate.toISOString(); //.split('T')[0];
   }
   let lastQuote = data.quotes[0];
-  let lastQuoteDate = new Date(lastQuote.date);
-  let lastQuoteDateString = lastQuoteDate.toISOString().split('T')[0];
+  let lastQuoteDate = lastQuote ? new Date(lastQuote.date) : null;
+  let lastQuoteDateString = lastQuoteDate ? lastQuoteDate.toISOString().split('T')[0] : null;
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -84,7 +84,7 @@ const MyChartLeft = ({ data, stockList, index, toPrevious, toNext }) => {
           Last Price: {data.dquote.last} on {dquoteDateString}
         </p>
         <p>
-          Last Quote: {lastQuote.close} on {lastQuoteDateString}
+          Last Quote: {lastQuote ? lastQuote.close : ''} on {lastQuoteDateString}
         </p>
       </div>
       <p className={styles.gainRow}>

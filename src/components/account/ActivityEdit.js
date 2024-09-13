@@ -39,6 +39,7 @@ function ActivityEdit(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let dateObj = new Date(date);
     // console.log('handleSubmit called');
     // let dateObj = Date.parse(date);
     // setLastUsedDate(new Date(date));
@@ -53,7 +54,7 @@ function ActivityEdit(props) {
         _id: activity ? activity._id : 0,
         accountId: account._id,
         tickerName: ticker,
-        date: date,
+        date: dateObj.getTime(),
         shares: Number(shares),
         amount: Number(amount),
         price: Number(price),

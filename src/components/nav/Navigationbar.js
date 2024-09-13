@@ -61,10 +61,10 @@ function Navigationbar() {
             <Nav.Link as={Link} to="/holdings">
               Holdings
             </Nav.Link>
-            <Nav.Link as={Link} to="/hot">
-              Hot
-            </Nav.Link>
-            <NavDropdown title="Watch" id="watch">
+            <NavDropdown title="Portfolio" id="watch">
+              <NavDropdown.Item as={Link} to="/hot">
+                Hot
+              </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/watch/core">
                 {PortfolioMap['core']}
               </NavDropdown.Item>
