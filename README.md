@@ -63,7 +63,7 @@ The account reports shows the metrics and activities of the accounts. These metr
 - Monthly Report and Annual Report: Calculates metrics for all of the accounts' values across either different months and different years.
 - Report by Stock: Shows an aggregate of all the stocks handled in the activities of all the accounts.
 
-![](demo/account-all.mp4)
+![](demo/account-all.mov)
 
 #### Individual
 
