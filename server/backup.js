@@ -9,7 +9,7 @@ exports.clearRecordData = async (req, res) => {
     for (const item of recorddbnames) {
       dbclient.recorddb().collection(item).deleteMany({});
     }
-    res.send({ message: 'Finished clearing data' });
+    res.send({ message: 'Finished clearing record data' });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: e });
@@ -23,7 +23,7 @@ exports.clearQuoteData = async (req, res) => {
     for (const item of quotedbnames) {
       dbclient.quotedb().collection(item).deleteMany({});
     }
-    res.send({ message: 'Finished clearing data' });
+    res.send({ message: 'Finished clearing quote data' });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: e });

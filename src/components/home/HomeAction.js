@@ -38,6 +38,28 @@ function HomeAction() {
         setMessage(action + ' failed.');
       });
   };
+
+  const deleteCall = (url, action) => {
+    fetch(url, {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          // console.log('response comes back okay');
+          setMessage(action + ' completed');
+        } else {
+          setMessage('Response is back but not okay.');
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setMessage(action + ' failed.');
+      });
+  };
   const getCall = (url, filename, action) => {
     fetch(url, {
       method: 'GET',
@@ -86,19 +108,12 @@ function HomeAction() {
       });
   };
 
-  // useEffect(() => {
-  //   const json = JSON.stringify(fileUploadR);
-  //   setMessage('This: ' + json);
-  // }, [fileUploadR]);
-
   const handleUpdateAccountValues = () => postCall('/rest/action/updateaccountvalues', 'Updating account values');
+  const handleClearRecordData = () => deleteCall('/rest/clearrecorddata', 'Clearing Record Data');
+  const handleClearQuoteData = () => deleteCall('/rest/clearquotedata', 'Clearing Quote Data');
   const handleExportRecordJSON = () => getCall('/rest/exportrecordjson', 'TrendViewer-Record.json', 'Exporting Record JSON');
   const handleExportQuoteJSON = () => getCall('/rest/exportquotejson', 'TrendViewer-Quote.json', 'Exporting Quote JSON');
   const handleImportRecordJSON = (e) => {
-    // setFileUploadR(e.target.value);
-    // setFileUploadR(inputRefR.current.files[0]);
-    // const json1 = JSON.stringify(inputRefR.current.files[0]);
-    // setMessage('This: ' + json1);
     const data = new FormData();
     data.append('file', inputRefR.current.files[0]);
     postFileCall('/rest/importrecordjson', data, 'Importing Record JSON');
@@ -121,9 +136,6 @@ function HomeAction() {
               <Container fluid>
                 <Navbar.Collapse id="navbarHomeAction">
                   <Form className="d-flex">
-                    <Button className={styles.toolbarButton} variant="primary" onClick={handleUpdateAccountValues}>
-                      Update Account Values
-                    </Button>
                     <Button className={styles.toolbarButton} variant="primary" onClick={handleExportRecordJSON}>
                       Export Record JSON
                     </Button>
@@ -143,6 +155,12 @@ function HomeAction() {
                       <input onChange={handleImportQuoteJSON} multiple={false} ref={inputRefQ} type="file" hidden />
                     </div>
                     {/* {fileUpload} */}
+                    <Button className={styles.toolbarButton} variant="primary" onClick={handleClearRecordData}>
+                      Clear Record Data
+                    </Button>
+                    <Button className={styles.toolbarButton} variant="primary" onClick={handleClearQuoteData}>
+                      Clear Quote Data
+                    </Button>
                   </Form>
                 </Navbar.Collapse>
               </Container>
