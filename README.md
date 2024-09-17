@@ -63,8 +63,6 @@ The account reports shows the metrics and activities of the accounts. These metr
 - Monthly Report and Annual Report: Calculates metrics for all of the accounts' values across either different months and different years.
 - Report by Stock: Shows an aggregate of all the stocks handled in the activities of all the accounts.
 
-![](demo/account-all.mov)
-
 #### Individual
 
 - Summary: Shows a summary of the account and a list of its holdings.
@@ -80,6 +78,8 @@ Upon navigating to a ticker, several pages can be accessed:
 - Activities: Shows all activities dealing with the ticker from any account.
 - Journals: Allows users to take notes for the ticker.
 - Quotes: Shows the daily quote and historical quote data for the ticker.
+
+Tickers can also be added and deleted.
 
 ### Ticker Slides
 

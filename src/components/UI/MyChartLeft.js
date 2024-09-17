@@ -18,7 +18,7 @@ const MyChartLeft = ({ data, stockList, index, toPrevious, toNext }) => {
   useEffect(() => {
     buyLimitInputRef.current.value = data.buyLimit ? data.buyLimit : '';
     sellStopInputRef.current.value = data.sellStop ? data.sellStop : '';
-    commentInputRef.current.value = data.comment;
+    commentInputRef.current.value = data.comment ? data.comment : '';
   }, [data]);
 
   //let index = holdings.findIndex((h) => h.tickerName === data.tickerName) + 1;

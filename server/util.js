@@ -35,8 +35,10 @@ exports.updateAccounts = () => {
       .toArray()
       .then((objs) => {
         accounts.clear();
-        for (const obj of objs) {
-          accounts.set(obj._id, obj);
+        if (objs.length > 0) {
+          for (const obj of objs) {
+            accounts.set(obj._id, obj);
+          }
         }
       });
   } catch (e) {
@@ -56,7 +58,7 @@ exports.createCounters = () => {
       .limit(1)
       .toArray()
       .then((objs) => {
-        counters.set('tickerjournal', objs[0]._id);
+        if (objs.length > 0) counters.set('tickerjournal', objs[0]._id);
       });
     dbclient
       .recorddb()
@@ -66,7 +68,7 @@ exports.createCounters = () => {
       .limit(1)
       .toArray()
       .then((objs) => {
-        counters.set('activity', objs[0]._id);
+        if (objs.length > 0) counters.set('activity', objs[0]._id);
       });
     dbclient
       .recorddb()
@@ -76,7 +78,7 @@ exports.createCounters = () => {
       .limit(1)
       .toArray()
       .then((objs) => {
-        counters.set('marketassessment', objs[0]._id);
+        if (objs.length > 0) counters.set('marketassessment', objs[0]._id);
       });
   } catch (e) {
     console.error(e);

@@ -152,12 +152,12 @@ function HomeAction() {
                       <Button className={styles.toolbarButton} variant="primary" onClick={() => inputRefQ.current.click()}>
                         Import Quote JSON
                       </Button>
-                      <input onChange={handleImportQuoteJSON} multiple={false} ref={inputRefQ} type="file" hidden />
+                      <input onChange={handleImportQuoteJSON} multiple={true} ref={inputRefQ} type="file" hidden />
                     </div>
                     {/* {fileUpload} */}
-                    <Button className={styles.toolbarButton} variant="primary" onClick={handleClearRecordData}>
+                    {/* <Button className={styles.toolbarButton} variant="primary" onClick={handleClearRecordData}>
                       Clear Record Data
-                    </Button>
+                    </Button> */}
                     <Button className={styles.toolbarButton} variant="primary" onClick={handleClearQuoteData}>
                       Clear Quote Data
                     </Button>

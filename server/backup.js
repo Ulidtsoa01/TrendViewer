@@ -66,26 +66,36 @@ exports.importRecordJson = async (req, res) => {
   let backup = JSON.parse(req.file.buffer.toString());
   const dbnames = Object.keys(backup);
   try {
-    for (const item of dbnames) {
-      dbclient.recorddb().collection(item).insertMany(backup[item]);
-      // .then(res.send({ message: 'Inserted ' + item }));
-    }
-    res.send({ message: 'Inserting ' });
+    const promises = dbnames.map(async (item) => {
+      const insert = await dbclient.recorddb().collection(item).insertMany(backup[item]);
+      return insert;
+    });
+
+    await Promise.all(promises);
+    util.updateAccounts();
+    util.createCounters();
+    res.send({ message: 'Done inserting record' });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: e });
   }
 };
 
-exports.importQuoteJson = (req, res) => {
-  const backup = { ...req.body };
+exports.importQuoteJson = async (req, res) => {
+  const backup = JSON.parse(req.file.buffer.toString());
   const dbnames = Object.keys(backup);
   try {
-    for (const item of dbnames) {
-      dbclient.quotedb().collection(item).insertMany(backup[item]);
-      // .then(res.send({ message: 'Inserted ' + item }));
-    }
-    res.send({ message: 'Inserting ' });
+    // for (const item of dbnames) {
+    //   dbclient.quotedb().collection(item).insertMany(backup[item]);
+    //   // .then(res.send({ message: 'Inserted ' + item }));
+    // }
+    const promises = dbnames.map(async (item) => {
+      const insert = await dbclient.quotedb().collection(item).insertMany(backup[item]);
+      return insert;
+    });
+
+    await Promise.all(promises);
+    res.send({ message: 'Done inserting quotes' });
   } catch (e) {
     console.error(e);
     res.status(500).send({ message: e });
