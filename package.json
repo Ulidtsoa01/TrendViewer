@@ -29,7 +29,7 @@
     "oldstart": "npm run server & npm run client",
     "server": "node server/index.js",
     "frontend": "npm start --prefix frontend",
-    "start": "npm run server & npm run client",
+    "start": "npm run server",
     "dev": "concurrently \"npm run server\" \"npm run frontend\"",
     "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
