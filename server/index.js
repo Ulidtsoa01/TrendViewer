@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
+const path = require('path');
 const account = require('./account');
 const backup = require('./backup');
 const dbclient = require('./dbclient');
@@ -100,6 +101,13 @@ app.get('/rest/old/importquotejson', backup.importQuoteJsonOld);
 // app.get('/*', function (req, res) {
 //   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 // });
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(__dirname, 'frontend/build'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

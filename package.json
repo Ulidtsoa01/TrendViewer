@@ -31,7 +31,8 @@
     "frontend": "npm start --prefix frontend",
     "start": "npm run server",
     "dev": "concurrently \"npm run server\" \"npm run frontend\"",
-    "heroku-postbuild": "cd frontend && npm install && npm run build"
+    "oldheroku-postbuild": "cd frontend && npm install && npm run build",
+    "heroku-postbuild": "npm install --prefix frontend && npm run build --prefix frontend"
   },
   "eslintConfig": {
     "extends": [
