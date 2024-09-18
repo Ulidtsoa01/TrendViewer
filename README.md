@@ -15,6 +15,16 @@ This project is Node.js, MongoDB, and React app for users to track their own fin
   - Backend API testing via Postman to ensure that code works.
 - MongoDB database
   - Ensure data persistence and allow flexible handling of data.
+ 
+## Table of Contents
+- [Description](#description)
+- [Table of Contents](#table-of-contents)
+- [Terms explanation](#terms-explanation)
+- [Features](#features)
+- [Data and Functionality](#data-and-functionality)
+  - [RecordDB Collections](#recorddb-collections)
+  - [QuoteDB Collections](#quotedb-collections)
+- [Credits](#credits)
 
 ## Terms explanation
 
@@ -62,7 +72,7 @@ The account reports shows the metrics and activities of the accounts. These metr
 - Monthly Report and Annual Report: Calculates metrics for all of the accounts' values across either different months and different years.
 - Report by Stock: Shows an aggregate of all the stocks handled in the activities of all the accounts.
 
-[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/account-all.mov)
+https://github.com/user-attachments/assets/deea95a8-1860-4c79-83e6-d03b7737c8ce
 
 #### Individual
 
@@ -71,7 +81,7 @@ The account reports shows the metrics and activities of the accounts. These metr
 - Monthly Report and Annual Report: Calculates metrics for an account's values across either different months and different years.
 - Value History: Shows the account value at the end of each month. The comment field shows the holdings and the amount of shares.
 
-[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/account-individual%20and%20activity.mov)
+https://github.com/user-attachments/assets/e0d0dada-99a9-4240-9ea5-eaadd056485c
 
 ### Ticker
 
@@ -80,19 +90,19 @@ Upon navigating to a ticker, several pages can be accessed:
 - Summary: Holds information on a ticker which can be changed by the user. The settings section represents values that are applicable to some but not all tickers.
 - Activities: Shows all activities dealing with the ticker from any account.
 - Journals: Allows users to take notes for the ticker.
-- Quotes: Shows the daily quote and historical quote data for the ticker.
+- Quotes: Shows the daily quote and historical quote data for the ticker.  
 
-[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/ticker.mov)
+https://github.com/user-attachments/assets/6b7975ab-0016-4c52-8367-02459e90c040
 
 Tickers can also be added and deleted.
 
-[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/create%20and%20delete%20ticker.mov)
+https://github.com/user-attachments/assets/035e0414-9933-4caf-b958-85dbc93fdb3d
 
 ### Ticker Slides
 
 The slide page for a ticker can be accessed via links on the holdings and portfolio pages. The left side shows the ticker info, quote data, related links, and activities for the specified ticker. The right side has a chart visualizing the quote history of the ticker.
 
-[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/ticker%20slide.mov)
+https://github.com/user-attachments/assets/a0f8bfb6-3821-4a7a-b10e-789691fc7ff0
 
 ### Holdings
 
@@ -106,7 +116,7 @@ Each portfolio page is a collection of tickers, which users can add to or remove
 
 The market journal allows users to take notes and record article links.
 
-[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/market%20journal.mov)
+https://github.com/user-attachments/assets/550e082a-f70a-4398-9e57-0465369fb7d1
 
 ## Data and Functionality
 
