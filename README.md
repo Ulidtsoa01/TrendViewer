@@ -250,7 +250,11 @@ Stores the history of values for a stock quote. Each item in the quotes array co
 ## Credits
 
 - **Dependencies:**
-  - multer: node.js middleware for handling multipart/form-data
-  - reduxjs: stage management for a centralized application state
-  - react-bootstrap: templates for various compoenents
+  - frontend
+    - react-redux: stage management for a centralized application state
+    - react-bootstrap: templates for various compoenents
+    - others: axios, react-router-dom, react-select
+  - server
+    - multer: node.js middleware for handling multipart/form-data
+    - others: cors, express, mongodb
 - Code in [MyChart.js](src/components/UI/MyChart.js) and MyChartContext.js(src/components/UI/MyChartContext.js) is borrowed from an acquaintance.

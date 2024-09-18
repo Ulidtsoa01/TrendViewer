@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import RootLayout from './components/misc/Root';
-import ErrorPage from './components/misc/Error';
+import RootLayout from './components/misc/Root.js';
+import ErrorPage from './components/misc/Error.js';
 import HomePage from './components/home/Home.js';
 import HoldingTable, { loader as holdingLoader } from './components/holding/HoldingTable.js';
 import HoldingSlide from './components/holding/HoldingSlide.js';
