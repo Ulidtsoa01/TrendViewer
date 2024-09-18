@@ -10,7 +10,6 @@ const columns = [
   { title: 'Value', field: 'value', type: 'number' },
   { title: 'Gain', field: 'gain', type: 'number' },
   { title: 'Gain Percent', field: 'gainPercent', type: 'number' },
-  { title: 'SPY Percent', field: 'referenceGainPercent', type: 'number' },
 ];
 
 function AccountReport(props) {

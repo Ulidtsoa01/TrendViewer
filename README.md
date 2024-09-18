@@ -1,10 +1,10 @@
 # TrendViewer
 
-Node.js, MongoDB, and React app for tracking financial accounts, stock values, and doing market analysis.
+https://trendviewer-b2ddfdd9532e.herokuapp.com/
 
 ## Description
 
-This project is an app for users to track their own financial accounts, view current market stock values, and generate metrics and figures to aid them with market analysis. It employes the following concepts:
+This project is Node.js, MongoDB, and React app for users to track their own financial accounts, view current market stock values, and generate metrics and figures to aid them with market analysis. It employes the following concepts:
 
 - Client-side routing with React Router
   - Facilitate easy and quick navigation between pages, mimicking the experience of a single-page application.
@@ -26,7 +26,6 @@ Explanation of terms and metrics used throughout this project for clarity:
 - Value: total worth of all stock holdings and current cash for an account
 - Gain: money gained, equals the current value minus the original cash
 - Gain Percent: equals the gain divided by the original cash
-- SPY Percent: how much gain is invested in SPY, which is the ETF tracking S&P 500 index
 - Buy Climax: occurs when an up-trend ends on extremely high volume and narrow price spread <>(what number mean)
 - Sell Climax: occurs when a down-trend ends on extremely high volume and narrow price spread
 - Buy and Sell Limit: A limit order to buy or sell a security must be executed at a specific price or better. A buy limit order can only be executed lower or equal to the buy limit, and a sell limit order can only be executed above or equal to the sell limit.
