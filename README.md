@@ -62,7 +62,7 @@ The account reports shows the metrics and activities of the accounts. These metr
 - Monthly Report and Annual Report: Calculates metrics for all of the accounts' values across either different months and different years.
 - Report by Stock: Shows an aggregate of all the stocks handled in the activities of all the accounts.
 
-https://github.com/user-attachments/assets/d85d57c5-c994-4191-bb33-ba565910bdd5
+[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/account-all.mov)
 
 #### Individual
 
@@ -71,7 +71,7 @@ https://github.com/user-attachments/assets/d85d57c5-c994-4191-bb33-ba565910bdd5
 - Monthly Report and Annual Report: Calculates metrics for an account's values across either different months and different years.
 - Value History: Shows the account value at the end of each month. The comment field shows the holdings and the amount of shares.
 
-https://github.com/user-attachments/assets/cf103117-76aa-49e3-821d-d82c406d234a
+[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/account-individual%20and%20activity.mov)
 
 ### Ticker
 
@@ -82,17 +82,17 @@ Upon navigating to a ticker, several pages can be accessed:
 - Journals: Allows users to take notes for the ticker.
 - Quotes: Shows the daily quote and historical quote data for the ticker.
 
-https://github.com/user-attachments/assets/cf3c0701-6394-4454-8e3e-86fd461e6629
+[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/ticker.mov)
 
 Tickers can also be added and deleted.
 
-https://github.com/user-attachments/assets/57f55700-060c-48f4-9362-3390a7991b34
+[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/create%20and%20delete%20ticker.mov)
 
 ### Ticker Slides
 
 The slide page for a ticker can be accessed via links on the holdings and portfolio pages. The left side shows the ticker info, quote data, related links, and activities for the specified ticker. The right side has a chart visualizing the quote history of the ticker.
 
-https://github.com/user-attachments/assets/49ad27a0-e4cb-41ae-aff2-da8d30dbbdd8
+[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/ticker%20slide.mov)
 
 ### Holdings
 
@@ -106,7 +106,7 @@ Each portfolio page is a collection of tickers, which users can add to or remove
 
 The market journal allows users to take notes and record article links.
 
-https://github.com/user-attachments/assets/9f72763d-2da3-4ad1-9a20-2d3d7c4e4555
+[](https://github.com/Ulidtsoa01/TrendViewer/blob/main/demo/market%20journal.mov)
 
 ## Data and Functionality
 
